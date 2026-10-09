@@ -37,10 +37,11 @@
     --accent-soft:#E4E1D6;
 
     --ok:#2F6B45;
+    --ok-bg:#E8F1EA;
     --mid:#B07D1A;
     --low:#C2622E;
+    --low-bg:#F8EAE4;
 
-    /* tinte por opción */
     --o1-bg:#FAF3E8;  --o1-bd:#E8D8BC;
     --o2-bg:#EAF1F8;  --o2-bd:#C9DCEB;
     --o3-bg:#EDF4EA;  --o3-bd:#CFE2C6;
@@ -50,7 +51,6 @@
     --shadow:0 14px 34px rgba(0,0,0,.07);
   }
 
-  /* ---------- Arquero (fútbol) ---------- */
   :root[data-theme="futbol"]{
     --bg:#F0F7EF;
     --surface:#FFFFFF;
@@ -64,8 +64,10 @@
     --accent-soft:#B9E3C4;
 
     --ok:#1E8A4C;
+    --ok-bg:#DDF1DF;
     --mid:#C99A16;
     --low:#D4703A;
+    --low-bg:#F8E2D6;
 
     --o1-bg:#E1F2E4;  --o1-bd:#A9DBB6;
     --o2-bg:#FCF3D6;  --o2-bd:#F0DC8C;
@@ -76,7 +78,6 @@
       rgba(30,138,76,.10) 0 12px, rgba(30,138,76,.20) 12px 24px);
   }
 
-  /* ---------- Kawaii ---------- */
   :root[data-theme="kawaii"]{
     --radius:20px;
     --font: ui-rounded, "SF Pro Rounded", "Nunito", "Quicksand", ui-sans-serif, system-ui, sans-serif;
@@ -92,8 +93,10 @@
     --accent-soft:#FBD1E0;
 
     --ok:#5BB98C;
+    --ok-bg:#E4F5EC;
     --mid:#E8A33D;
     --low:#F08A8A;
+    --low-bg:#FBE3E3;
 
     --o1-bg:#FFE4EF;  --o1-bd:#F9B8CF;
     --o2-bg:#EAE0F7;  --o2-bd:#CCB8E8;
@@ -103,7 +106,6 @@
     --shadow:0 16px 34px rgba(240,106,155,.14);
   }
 
-  /* ---------- Arcade ---------- */
   :root[data-theme="arcade"]{
     --bg:#12121B;
     --surface:#1A1A26;
@@ -117,8 +119,10 @@
     --accent-soft:#3A3560;
 
     --ok:#3DDC97;
+    --ok-bg:#173328;
     --mid:#FFC857;
     --low:#FF7A8A;
+    --low-bg:#321C25;
 
     --o1-bg:#241E3C;  --o1-bd:#4B4080;
     --o2-bg:#1A2E3A;  --o2-bd:#2F5568;
@@ -144,7 +148,7 @@
   }
 
   .wrap{
-    max-width:760px;
+    max-width:780px;
     margin:0 auto;
     padding:72px 28px 120px;
   }
@@ -152,7 +156,6 @@
     .wrap{ padding:44px 18px 80px; }
   }
 
-  /* ---------- Tipografía ---------- */
   .eyebrow{
     font-size:11px;
     letter-spacing:.18em;
@@ -226,10 +229,8 @@
     margin:0 0 8px 8px;
     font-weight:700;
   }
-  .panel-title + .panel-title,
   .sizes + .panel-title,
-  #swatches + .panel-title,
-  .sizes + .panel-title{ margin-top:16px; }
+  #swatches + .panel-title{ margin-top:16px; }
 
   .swatch{
     display:flex;
@@ -269,8 +270,6 @@
     line-height:1.35;
   }
 
-  /* ---------- Tamaño de letra ---------- */
-
   .sizes{
     display:grid;
     grid-template-columns:1fr 1fr 1fr 1fr;
@@ -305,9 +304,7 @@
      MENÚ INICIAL
      ============================================================ */
 
-  .menu{
-    border-top:1px solid var(--line);
-  }
+  .menu{ border-top:1px solid var(--line); }
 
   .btn{
     display:flex;
@@ -371,7 +368,6 @@
     letter-spacing:.1em;
     font-weight:700;
   }
-  :root[data-theme="arcade"] .meta .pill{ color:var(--ink); }
 
   .bar{
     height:4px;
@@ -402,8 +398,6 @@
     from{ opacity:0; transform:translateY(9px); }
     to{ opacity:1; transform:none; }
   }
-
-  /* ---------- Matriz de respuestas ---------- */
 
   .opts{
     display:grid;
@@ -485,8 +479,6 @@
     line-height:1;
   }
 
-  /* ---------- Nav ---------- */
-
   .nav{
     display:flex;
     justify-content:space-between;
@@ -532,9 +524,16 @@
   .ghost:hover{ color:var(--soft); text-decoration:underline; }
 
   /* ============================================================
-     RESULTADOS
+     RESULTADOS — CABECERA
      ============================================================ */
 
+  .res-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    flex-wrap:wrap;
+  }
   .bignum{
     font-size:76px;
     font-weight:800;
@@ -606,14 +605,69 @@
   .scale span:nth-child(2){ color:var(--mid); }
   .scale span:nth-child(3){ color:var(--ok); }
 
-  /* ---------- Bloques de nivel ---------- */
+  /* ============================================================
+     SOLAPAS
+     ============================================================ */
+
+  .tabs{
+    margin-top:52px;
+    display:flex;
+    gap:0;
+    border-bottom:1px solid var(--line);
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{ display:none; }
+
+  .tab{
+    position:relative;
+    flex:none;
+    background:none;
+    border:0;
+    font:inherit;
+    font-size:13px;
+    font-weight:700;
+    color:var(--faint);
+    padding:14px 16px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:color .15s ease;
+  }
+  .tab:hover{ color:var(--soft); }
+  .tab.active{ color:var(--ink); }
+  .tab::after{
+    content:"";
+    position:absolute;
+    left:12px; right:12px; bottom:-1px;
+    height:3px;
+    background:var(--accent);
+    transform:scaleX(0);
+    transition:transform .2s ease;
+  }
+  .tab.active::after{ transform:scaleX(1); }
+
+  .tab .count{
+    display:inline-block;
+    margin-left:7px;
+    font-size:11px;
+    font-weight:700;
+    color:var(--faint);
+    font-variant-numeric:tabular-nums;
+  }
+  .tab.active .count{ color:var(--accent); }
+
+  .tabpane{ animation:fadeUp .25s ease both; }
+  .tabpane[hidden]{ display:none; }
+
+  /* ---------- Resumen ---------- */
 
   .lvl{
-    margin-top:58px;
-    padding-top:34px;
+    margin-top:38px;
+    padding-top:30px;
     border-top:1px solid var(--line);
     position:relative;
   }
+  .lvl:first-child{ margin-top:22px; }
   .lvl::before{
     content:"";
     position:absolute;
@@ -695,17 +749,13 @@
 
   /* ---------- Mapa de progreso ---------- */
 
-  .plan{
-    margin-top:68px;
-    padding-top:34px;
-    border-top:1px solid var(--line);
-  }
   .plan h2{
     font-size:16px;
     font-weight:800;
     letter-spacing:-.01em;
-    margin:0 0 8px;
+    margin:32px 0 8px;
   }
+  .plan h2:first-child{ margin-top:22px; }
   .plan .sub{
     font-size:14px;
     color:var(--soft);
@@ -759,51 +809,223 @@
     font-style:italic;
   }
 
-  /* ---------- Detalle ---------- */
+  /* ============================================================
+     REVISIÓN CUANTITATIVA
+     ============================================================ */
 
-  details{
-    margin-top:68px;
-    padding-top:34px;
-    border-top:1px solid var(--line);
+  .rev-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+    margin:26px 0 20px;
   }
-  summary{
-    cursor:pointer;
-    font-size:13px;
+  .rev-stats{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    font-size:12px;
     color:var(--soft);
-    list-style:none;
-    user-select:none;
     font-weight:700;
+    letter-spacing:.02em;
   }
-  summary::-webkit-details-marker{ display:none; }
-  summary::before{ content:"+  "; color:var(--accent); font-weight:800; }
-  details[open] summary::before{ content:"–  "; }
-
-  table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:22px;
-    font-size:13px;
-  }
-  th,td{
-    text-align:left;
-    padding:9px 12px 9px 0;
-    border-bottom:1px solid var(--line2);
-    vertical-align:top;
-  }
-  th{
-    font-size:10px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    color:var(--faint);
+  .rev-stats b{
+    font-variant-numeric:tabular-nums;
     font-weight:800;
   }
-  td.num{ font-variant-numeric:tabular-nums; white-space:nowrap; }
-  .mk-ok{ color:var(--ok); font-weight:800; }
-  .mk-no{ color:var(--low); font-weight:800; }
-  .mk-bl{ color:var(--faint); }
+  .rev-stats .st-ok b{ color:var(--ok); }
+  .rev-stats .st-no b{ color:var(--low); }
+  .rev-stats .st-bl b{ color:var(--faint); }
+
+  .filters{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+  .filters button{
+    background:none;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font:inherit;
+    font-size:12px;
+    font-weight:700;
+    color:var(--soft);
+    padding:7px 12px;
+    cursor:pointer;
+    transition:background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .filters button:hover{ border-color:var(--faint); }
+  .filters button.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:var(--bg);
+  }
+  :root[data-theme="arcade"] .filters button.active{ color:#12121B; }
+
+  .rev{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:8px;
+  }
+
+  .rev-item{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--surface);
+    padding:16px 18px;
+    border-left-width:4px;
+    border-left-style:solid;
+    border-left-color:var(--line);
+    transition:border-color .15s ease;
+  }
+  .rev-item.ok{ border-left-color:var(--ok); }
+  .rev-item.no{ border-left-color:var(--low); }
+  .rev-item.bl{ border-left-color:var(--faint); }
+
+  .rev-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:800;
+    color:var(--faint);
+  }
+  .rev-num{
+    display:grid;
+    place-items:center;
+    min-width:26px;
+    height:26px;
+    padding:0 7px;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font-size:12px;
+    color:var(--soft);
+    font-variant-numeric:tabular-nums;
+  }
+  .rev-nivel{ color:var(--soft); }
+  .rev-cat{
+    margin-left:auto;
+    text-transform:none;
+    letter-spacing:0;
+    font-weight:600;
+    color:var(--faint);
+    font-size:12px;
+  }
+
+  .rev-q{
+    font-size:15px;
+    font-weight:600;
+    line-height:1.45;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+
+  .rev-opts{
+    display:grid;
+    gap:8px;
+  }
+
+  .rev-opt{
+    display:flex;
+    align-items:flex-start;
+    gap:11px;
+    padding:10px 13px;
+    border:1px solid var(--line2);
+    border-radius:var(--radius);
+    background:var(--bg);
+    font-size:14px;
+    line-height:1.4;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .rev-opt .rk{
+    flex:none;
+    width:20px;
+    font-size:11px;
+    font-weight:800;
+    color:var(--faint);
+    line-height:1.7;
+    font-variant-numeric:tabular-nums;
+  }
+  .rev-opt .rt{ flex:1; }
+
+  .rev-opt.correct{
+    background:var(--ok-bg);
+    border-color:var(--ok);
+  }
+  .rev-opt.correct .rk{ color:var(--ok); }
+  .rev-opt.correct .rt{ font-weight:700; }
+
+  .rev-opt.wrong{
+    background:var(--low-bg);
+    border-color:var(--low);
+  }
+  .rev-opt.wrong .rk{ color:var(--low); }
+  .rev-opt.wrong .rt{ font-weight:700; }
+
+  .rev-opt .badge{
+    flex:none;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    padding:3px 7px;
+    border-radius:var(--radius);
+    line-height:1.5;
+    white-space:nowrap;
+  }
+  .rev-opt.correct .badge{
+    background:var(--ok);
+    color:#fff;
+  }
+  :root[data-theme="arcade"] .rev-opt.correct .badge{ color:#0E1A14; }
+
+  .rev-opt.wrong .badge{
+    background:var(--low);
+    color:#fff;
+  }
+  :root[data-theme="arcade"] .rev-opt.wrong .badge{ color:#2A0E13; }
+
+  .rev-opt .badge.solo{
+    background:var(--line);
+    color:var(--soft);
+  }
+
+  .rev-opt .badge.mixta{
+    background:var(--accent);
+    color:#fff;
+  }
+  :root[data-theme="arcade"] .rev-opt .badge.mixta{ color:#12121B; }
+
+  .rev-opt.correct.wrong{ /* no aplica, por claridad */ }
+
+  .rev-note{
+    margin-top:11px;
+    font-size:12px;
+    color:var(--faint);
+    font-style:italic;
+  }
+
+  .rev-empty{
+    padding:40px 0;
+    text-align:center;
+    font-size:14px;
+    color:var(--faint);
+    font-style:italic;
+  }
+
+  /* ============================================================
+     ACCIONES
+     ============================================================ */
 
   .actions{
-    margin-top:60px;
+    margin-top:56px;
     display:flex;
     gap:26px;
     flex-wrap:wrap;
@@ -833,7 +1055,8 @@
       --bg:#fff; --surface:#fff; --ink:#000; --soft:#444; --faint:#777;
       --line:#ddd; --line2:#eee; --sel:#f2f2f2;
       --accent:#000; --accent-soft:#eee;
-      --ok:#2F6B45; --mid:#8A6A16; --low:#9C3B25;
+      --ok:#2F6B45; --ok-bg:#EEF6F0; --mid:#8A6A16;
+      --low:#9C3B25; --low-bg:#FBEDE9;
       --o1-bg:#fff; --o1-bd:#ccc;
       --o2-bg:#fff; --o2-bd:#ccc;
       --o3-bg:#fff; --o3-bd:#ccc;
@@ -841,9 +1064,23 @@
       --track-tex:none; --shadow:none; --radius:0px;
     }
     body{ background:#fff; }
-    .gear,.panel,.nav,.ghost,.actions{ display:none !important; }
+    .gear,.panel,.nav,.ghost,.actions,.tabs{ display:none !important; }
     .wrap{ padding:0; max-width:none; }
-    .lvl,.plan,details{ break-inside:avoid; }
+    .tabpane[hidden]{ display:block !important; }
+    .tabpane{ break-inside:auto; }
+    .tabpane::before{
+      content:attr(data-print-title);
+      display:block;
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:#000;
+      margin:26px 0 10px;
+      padding-top:14px;
+      border-top:2px solid #000;
+    }
+    .lvl,.group,.rev-item{ break-inside:avoid; }
   }
 </style>
 </head>
@@ -1092,8 +1329,6 @@ const DATA = [
 
 /* ============================================================
    TEMAS VISUALES
-   Cada tema define sus emojis por opción (o letras), sus
-   colores de muestra para el panel y su etiqueta.
    ============================================================ */
 
 const THEMES = [
@@ -1441,17 +1676,24 @@ function animarTracks(root){
   });
 }
 
-/* ---------------- Resultados ---------------- */
+/* ============================================================
+   RESULTADOS
+   ============================================================ */
+
+let TAB_ACTIVA = 'resumen';
+let FILTRO_REV = 'todas';
 
 function renderResultados() {
   pantalla = 'resultado';
+  TAB_ACTIVA = 'resumen';
+  FILTRO_REV = 'todas';
 
   const niveles   = calcular();
   const okTotal   = niveles.reduce((a, L) => a + L.ok, 0);
   const qTotal    = niveles.reduce((a, L) => a + L.total, 0);
   const pctGlobal = Math.round((okTotal / qTotal) * 100);
 
-  /* --- clasificación --- */
+  /* --- clasificación por tema --- */
   const planas = [];
   niveles.forEach(L => {
     Object.entries(L.cats).forEach(([nombre, c]) => {
@@ -1539,33 +1781,18 @@ function renderResultados() {
     recomendacion = 'Vas muy bien en los tres niveles. El siguiente paso son problemas más largos, donde haya que justificar cada decisión.';
   }
 
-  /* --- detalle --- */
-  const filas = S.cola.map((item, i) => {
-    const p2 = DATA[item.ni].preguntas[item.pi];
-    const r = S.resp[i];
-    const bien = r === p2.ok;
-    const marca = r === null
-      ? '<span class="mk-bl">—</span>'
-      : (bien ? '<span class="mk-ok">✓</span>' : '<span class="mk-no">✗</span>');
-
-    const texto = p2.q.length > 62 ? p2.q.slice(0, 60) + '…' : p2.q;
-
-    return `<tr>
-      <td class="num">${i + 1}</td>
-      <td>${esc(DATA[item.ni].nombre)}</td>
-      <td>${esc(texto)}</td>
-      <td class="num">${marca}</td>
-    </tr>`;
-  }).join('');
-
   /* --- render --- */
   app.innerHTML = `
     <div class="wrap">
       <p class="eyebrow">Diagnóstico</p>
       <h1>Tu resultado</h1>
 
-      <div class="bignum">${pctGlobal}%</div>
-      <div class="bigsub">${okTotal} de ${qTotal} respuestas correctas</div>
+      <div class="res-head">
+        <div>
+          <div class="bignum">${pctGlobal}%</div>
+          <div class="bigsub">${okTotal} de ${qTotal} respuestas correctas</div>
+        </div>
+      </div>
 
       <div class="track">
         <div class="track-inner" data-pct="${pctGlobal}">
@@ -1578,42 +1805,44 @@ function renderResultados() {
         <span>Comenzando</span><span>Creciendo</span><span>Dominando</span>
       </div>
 
-      ${bloquesNivel}
+      <nav class="tabs" id="tabs">
+        <button class="tab active" data-tab="resumen">Resumen</button>
+        <button class="tab" data-tab="mapa">Mapa de progreso</button>
+        <button class="tab" data-tab="revision">Revisión<span class="count" id="cntRev">${qTotal}</span></button>
+      </nav>
 
-      <section class="plan">
-        <h2>Tu mapa de progreso</h2>
-        <p class="sub">${recomendacion}</p>
+      <!-- ============ SOLAPA: RESUMEN ============ -->
+      <section class="tabpane" data-pane="resumen" data-print-title="Resumen por nivel">
+        ${bloquesNivel}
+      </section>
 
-        <div class="group g-fort">
-          <h3>Lo que ya dominas</h3>
-          ${lista(dominados, 'Aún no hay temas con dominio completo. Es normal al empezar.')}
-        </div>
+      <!-- ============ SOLAPA: MAPA DE PROGRESO ============ -->
+      <section class="tabpane" data-pane="mapa" data-print-title="Mapa de progreso" hidden>
+        <div class="plan">
+          <h2>Tu mapa de progreso</h2>
+          <p class="sub">${recomendacion}</p>
 
-        <div class="group g-proc">
-          <h3>Lo que estás construyendo</h3>
-          ${lista(construyendo, 'Ningún tema quedó a medio camino.')}
-        </div>
+          <div class="group g-fort">
+            <h3>Lo que ya dominas</h3>
+            ${lista(dominados, 'Aún no hay temas con dominio completo. Es normal al empezar.')}
+          </div>
 
-        <div class="group g-deb">
-          <h3>Hasta ahora, comenzando</h3>
-          ${lista(comenzando, 'Ningún tema apenas comenzando. ¡Buen inicio!')}
+          <div class="group g-proc">
+            <h3>Lo que estás construyendo</h3>
+            ${lista(construyendo, 'Ningún tema quedó a medio camino.')}
+          </div>
+
+          <div class="group g-deb">
+            <h3>Hasta ahora, comenzando</h3>
+            ${lista(comenzando, 'Ningún tema apenas comenzando. ¡Buen inicio!')}
+          </div>
         </div>
       </section>
 
-      <details>
-        <summary>Detalle pregunta a pregunta</summary>
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nivel</th>
-              <th>Pregunta</th>
-              <th>Res.</th>
-            </tr>
-          </thead>
-          <tbody>${filas}</tbody>
-        </table>
-      </details>
+      <!-- ============ SOLAPA: REVISIÓN ============ -->
+      <section class="tabpane" data-pane="revision" data-print-title="Revisión pregunta a pregunta" hidden>
+        ${htmlRevision()}
+      </section>
 
       <div class="actions">
         <button id="print">Imprimir / guardar PDF</button>
@@ -1621,11 +1850,165 @@ function renderResultados() {
       </div>
     </div>`;
 
+  /* --- eventos solapas --- */
+  const tabs = app.querySelectorAll('.tab');
+  tabs.forEach(t => {
+    t.onclick = () => activarTab(t.dataset.tab);
+  });
+
+  /* --- eventos filtros de revisión --- */
+  enlazarFiltros();
+
   app.querySelector('#print').onclick = () => window.print();
   app.querySelector('#again').onclick = renderInicio;
 
   animarTracks(app);
   window.scrollTo(0, 0);
+}
+
+/* ---------------- Solapas ---------------- */
+
+function activarTab(nombre){
+  TAB_ACTIVA = nombre;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === nombre);
+  });
+  document.querySelectorAll('.tabpane').forEach(p => {
+    p.hidden = p.dataset.pane !== nombre;
+  });
+  if(nombre === 'resumen') animarTracks(app);
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ============================================================
+   REVISIÓN CUANTITATIVA
+   ============================================================ */
+
+function estadoPregunta(i){
+  const item = S.cola[i];
+  const p = DATA[item.ni].preguntas[item.pi];
+  const r = S.resp[i];
+  if(r === null) return 'bl';
+  return r === p.ok ? 'ok' : 'no';
+}
+
+function htmlRevision(){
+  let ok = 0, no = 0, bl = 0;
+  S.cola.forEach((_, i) => {
+    const e = estadoPregunta(i);
+    if(e === 'ok') ok++;
+    else if(e === 'no') no++;
+    else bl++;
+  });
+
+  const items = S.cola.map((item, i) => htmlRevItem(i, item)).join('');
+
+  return `
+    <div class="rev-head">
+      <div class="rev-stats">
+        <span class="st-ok"><b>${ok}</b> correctas</span>
+        <span class="st-no"><b>${no}</b> incorrectas</span>
+        <span class="st-bl"><b>${bl}</b> sin responder</span>
+      </div>
+      <div class="filters" id="filtros">
+        <button data-f="todas" class="active">Todas</button>
+        <button data-f="no">Solo incorrectas</button>
+        <button data-f="bl">Sin responder</button>
+      </div>
+    </div>
+    <div class="rev" id="rev">${items}</div>
+    <p class="rev-empty" id="revEmpty" hidden>No hay preguntas que coincidan con este filtro.</p>
+  `;
+}
+
+function htmlRevItem(i, item){
+  const p     = DATA[item.ni].preguntas[item.pi];
+  const r     = S.resp[i];
+  const nivel = DATA[item.ni];
+  const estado = estadoPregunta(i);
+
+  const letras = ['A','B','C','D'];
+
+  const opts = p.ops.map((o, k) => {
+    const esCorrecta   = k === p.ok;
+    const esEstudiante = k === r;
+
+    let clase = '';
+    let badge = '';
+
+    if(esCorrecta && esEstudiante){
+      clase = 'correct';
+      badge = '<span class="badge mixta">correcta · tu respuesta</span>';
+    } else if(esCorrecta){
+      clase = 'correct';
+      badge = '<span class="badge">correcta</span>';
+    } else if(esEstudiante){
+      clase = 'wrong';
+      badge = '<span class="badge">tu respuesta</span>';
+    }
+
+    return `
+      <div class="rev-opt ${clase}">
+        <span class="rk">${letras[k]}</span>
+        <span class="rt">${esc(o)}</span>
+        ${badge}
+      </div>`;
+  }).join('');
+
+  const nota = r === null
+    ? '<p class="rev-note">Esta pregunta quedó sin responder.</p>'
+    : (estado === 'no'
+        ? '<p class="rev-note">La respuesta marcada no coincide con la correcta.</p>'
+        : '');
+
+  return `
+    <article class="rev-item ${estado}" data-estado="${estado}">
+      <div class="rev-top">
+        <span class="rev-num">${i + 1}</span>
+        <span class="rev-nivel">${esc(nivel.nombre)} · ${esc(nivel.sub)}</span>
+        <span class="rev-cat">${esc(p.cat)}</span>
+      </div>
+      <p class="rev-q">${esc(p.q)}</p>
+      <div class="rev-opts">${opts}</div>
+      ${nota}
+    </article>`;
+}
+
+/* ---------------- Filtros de la revisión ---------------- */
+
+function enlazarFiltros(){
+  const filtros = document.getElementById('filtros');
+  if(!filtros) return;
+
+  filtros.querySelectorAll('button').forEach(b => {
+    b.onclick = () => {
+      FILTRO_REV = b.dataset.f;
+      filtros.querySelectorAll('button').forEach(x => {
+        x.classList.toggle('active', x.dataset.f === FILTRO_REV);
+      });
+      aplicarFiltroRev();
+    };
+  });
+}
+
+function aplicarFiltroRev(){
+  const cont = document.getElementById('rev');
+  const vacio = document.getElementById('revEmpty');
+  if(!cont) return;
+
+  let visibles = 0;
+  cont.querySelectorAll('.rev-item').forEach(el => {
+    const e = el.dataset.estado;
+    const mostrar =
+      FILTRO_REV === 'todas' ? true :
+      FILTRO_REV === 'no'    ? (e === 'no') :
+      FILTRO_REV === 'bl'    ? (e === 'bl') : true;
+
+    el.hidden = !mostrar;
+    if(mostrar) visibles++;
+  });
+
+  if(vacio) vacio.hidden = visibles > 0;
 }
 
 /* ============================================================
