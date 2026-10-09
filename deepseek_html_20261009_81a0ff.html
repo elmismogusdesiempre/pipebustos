@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="clasico" data-size="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Test diagnóstico</title>
+<style>
+  /* ============================================================
+     TAMAÑOS DE LETRA
+     ============================================================ */
+  html[data-size="s"]  { --fs-base:15px; --fs-q:21px; --fs-opt:15px; --fs-emo:20px; }
+  html[data-size="m"]  { --fs-base:16px; --fs-q:25px; --fs-opt:16px; --fs-emo:24px; }
+  html[data-size="l"]  { --fs-base:17px; --fs-q:28px; --fs-opt:17px; --fs-emo:27px; }
+  html[data-size="xl"] { --fs-base:19px; --fs-q:32px; --fs-opt:19px; --fs-emo:31px; }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+
+  /* ============================================================
+     PALETAS
+     ============================================================ */
+
+  :root{
+    --radius:0px;
+    --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --bg:#FBFAF7;
+    --surface:#FFFFFF;
+    --ink:#16150F;
+    --soft:#6E6C63;
+    --faint:#A8A69C;
+    --line:#E6E4DC;
+    --line2:#EFEEE8;
+    --sel:#F1F0E9;
+    --accent:#16150F;
+    --accent-soft:#E4E1D6;
+
+    --ok:#2F6B45;
+    --mid:#B07D1A;
+    --low:#C2622E;
+
+    /* tinte por opción */
+    --o1-bg:#FAF3E8;  --o1-bd:#E8D8BC;
+    --o2-bg:#EAF1F8;  --o2-bd:#C9DCEB;
+    --o3-bg:#EDF4EA;  --o3-bd:#CFE2C6;
+    --o4-bg:#F8ECEE;  --o4-bd:#EBCBD0;
+
+    --track-tex:none;
+    --shadow:0 14px 34px rgba(0,0,0,.07);
+  }
+
+  /* ---------- Arquero (fútbol) ---------- */
+  :root[data-theme="futbol"]{
+    --bg:#F0F7EF;
+    --surface:#FFFFFF;
+    --ink:#0F2A1B;
+    --soft:#4C6B58;
+    --faint:#8FA898;
+    --line:#D5E7D7;
+    --line2:#E6F0E7;
+    --sel:#DDF1DF;
+    --accent:#1E8A4C;
+    --accent-soft:#B9E3C4;
+
+    --ok:#1E8A4C;
+    --mid:#C99A16;
+    --low:#D4703A;
+
+    --o1-bg:#E1F2E4;  --o1-bd:#A9DBB6;
+    --o2-bg:#FCF3D6;  --o2-bd:#F0DC8C;
+    --o3-bg:#E1EEF7;  --o3-bd:#B3D3E8;
+    --o4-bg:#F8EEE2;  --o4-bd:#E8CFA8;
+
+    --track-tex:repeating-linear-gradient(90deg,
+      rgba(30,138,76,.10) 0 12px, rgba(30,138,76,.20) 12px 24px);
+  }
+
+  /* ---------- Kawaii ---------- */
+  :root[data-theme="kawaii"]{
+    --radius:20px;
+    --font: ui-rounded, "SF Pro Rounded", "Nunito", "Quicksand", ui-sans-serif, system-ui, sans-serif;
+    --bg:#FFF5F9;
+    --surface:#FFFFFF;
+    --ink:#4A2E3D;
+    --soft:#8A6A7A;
+    --faint:#C9AABA;
+    --line:#F7DEE8;
+    --line2:#FCEBF2;
+    --sel:#FDE7F0;
+    --accent:#F06A9B;
+    --accent-soft:#FBD1E0;
+
+    --ok:#5BB98C;
+    --mid:#E8A33D;
+    --low:#F08A8A;
+
+    --o1-bg:#FFE4EF;  --o1-bd:#F9B8CF;
+    --o2-bg:#EAE0F7;  --o2-bd:#CCB8E8;
+    --o3-bg:#DFF5E9;  --o3-bd:#A8DFC2;
+    --o4-bg:#FFF3D6;  --o4-bd:#F0DCA0;
+
+    --shadow:0 16px 34px rgba(240,106,155,.14);
+  }
+
+  /* ---------- Arcade ---------- */
+  :root[data-theme="arcade"]{
+    --bg:#12121B;
+    --surface:#1A1A26;
+    --ink:#EFEDF7;
+    --soft:#A09DB5;
+    --faint:#6E6B85;
+    --line:#2A2A3A;
+    --line2:#21212E;
+    --sel:#2A2740;
+    --accent:#8B7CFF;
+    --accent-soft:#3A3560;
+
+    --ok:#3DDC97;
+    --mid:#FFC857;
+    --low:#FF7A8A;
+
+    --o1-bg:#241E3C;  --o1-bd:#4B4080;
+    --o2-bg:#1A2E3A;  --o2-bd:#2F5568;
+    --o3-bg:#1B3227;  --o3-bd:#2E5E48;
+    --o4-bg:#321E2C;  --o4-bd:#6A3A56;
+
+    --shadow:0 16px 40px rgba(0,0,0,.5);
+  }
+
+  /* ============================================================
+     BASE
+     ============================================================ */
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font);
+    font-size:var(--fs-base);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition:background .25s ease, color .25s ease;
+  }
+
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:72px 28px 120px;
+  }
+  @media (max-width:600px){
+    .wrap{ padding:44px 18px 80px; }
+  }
+
+  /* ---------- Tipografía ---------- */
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 14px;
+    font-weight:700;
+  }
+  h1{
+    font-size:32px;
+    font-weight:700;
+    letter-spacing:-.025em;
+    line-height:1.15;
+    margin:0 0 14px;
+  }
+  .lead{
+    font-size:15px;
+    color:var(--soft);
+    margin:0 0 42px;
+    max-width:58ch;
+  }
+  .lead em{ font-style:italic; color:var(--ink); }
+
+  /* ============================================================
+     AJUSTES
+     ============================================================ */
+
+  .gear{
+    position:fixed;
+    top:18px; right:18px;
+    z-index:60;
+    width:42px; height:42px;
+    display:grid;
+    place-items:center;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    color:var(--soft);
+    cursor:pointer;
+    padding:0;
+    transition:color .15s ease, border-color .15s ease, background .25s ease;
+  }
+  .gear:hover{ color:var(--accent); border-color:var(--accent); }
+  .gear.on{ color:var(--accent); border-color:var(--accent); background:var(--sel); }
+
+  .panel{
+    position:fixed;
+    top:70px; right:18px;
+    z-index:60;
+    width:268px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 14px 14px;
+    box-shadow:var(--shadow);
+    animation:pop .18s ease both;
+    transition:background .25s ease, border-color .25s ease;
+  }
+  .panel[hidden]{ display:none; }
+
+  @keyframes pop{
+    from{ opacity:0; transform:translateY(-6px); }
+    to{ opacity:1; transform:none; }
+  }
+
+  .panel-title{
+    font-size:10px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--faint);
+    margin:0 0 8px 8px;
+    font-weight:700;
+  }
+  .panel-title + .panel-title,
+  .sizes + .panel-title,
+  #swatches + .panel-title,
+  .sizes + .panel-title{ margin-top:16px; }
+
+  .swatch{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:0;
+    border-radius:var(--radius);
+    padding:9px 8px;
+    font:inherit;
+    color:inherit;
+    cursor:pointer;
+    transition:background .12s ease;
+  }
+  .swatch:hover{ background:var(--sel); }
+  .swatch.active{ background:var(--sel); }
+
+  .swatch .dots{ display:flex; gap:3px; flex:none; }
+  .swatch .dots i{
+    display:block;
+    width:11px; height:11px;
+    border-radius:2px;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+  }
+  .swatch .sw-text b{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    line-height:1.35;
+  }
+  .swatch .sw-text small{
+    display:block;
+    font-size:11px;
+    color:var(--faint);
+    line-height:1.35;
+  }
+
+  /* ---------- Tamaño de letra ---------- */
+
+  .sizes{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:6px;
+    padding:0 8px;
+  }
+  .sizes button{
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:9px 0;
+    font:inherit;
+    font-weight:700;
+    color:var(--soft);
+    cursor:pointer;
+    transition:background .12s ease, border-color .12s ease, color .12s ease;
+    line-height:1;
+  }
+  .sizes button:nth-child(1){ font-size:12px; }
+  .sizes button:nth-child(2){ font-size:15px; }
+  .sizes button:nth-child(3){ font-size:18px; }
+  .sizes button:nth-child(4){ font-size:21px; }
+  .sizes button:hover{ border-color:var(--faint); }
+  .sizes button.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  :root[data-theme="arcade"] .sizes button.active{ color:#12121B; }
+
+  /* ============================================================
+     MENÚ INICIAL
+     ============================================================ */
+
+  .menu{
+    border-top:1px solid var(--line);
+  }
+
+  .btn{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:0;
+    border-bottom:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 6px;
+    font:inherit;
+    color:inherit;
+    cursor:pointer;
+    transition:background .14s ease, padding-left .14s ease;
+    position:relative;
+  }
+  .btn::before{
+    content:"";
+    position:absolute;
+    left:0; top:14px; bottom:14px;
+    width:3px;
+    background:var(--accent);
+    transform:scaleY(0);
+    transform-origin:center;
+    transition:transform .18s ease;
+  }
+  .btn:hover{ background:var(--sel); padding-left:16px; }
+  .btn:hover::before{ transform:scaleY(1); }
+  .btn .t{ font-weight:700; font-size:16px; }
+  .btn .s{ font-size:13px; color:var(--faint); }
+
+  .foot{
+    font-size:12px;
+    color:var(--faint);
+    margin:32px 0 0;
+  }
+
+  /* ============================================================
+     PREGUNTA
+     ============================================================ */
+
+  .meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:16px;
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--faint);
+    margin-bottom:12px;
+    font-weight:700;
+  }
+  .meta .pill{
+    background:var(--accent-soft);
+    border-radius:var(--radius);
+    padding:4px 10px;
+    color:var(--ink);
+    letter-spacing:.1em;
+    font-weight:700;
+  }
+  :root[data-theme="arcade"] .meta .pill{ color:var(--ink); }
+
+  .bar{
+    height:4px;
+    background:var(--line2);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .bar i{
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg, var(--accent), var(--ok));
+    transition:width .35s cubic-bezier(.3,.9,.3,1);
+  }
+
+  .q{
+    font-size:var(--fs-q);
+    line-height:1.4;
+    font-weight:700;
+    letter-spacing:-.015em;
+    margin:48px 0 32px;
+    animation:fadeUp .32s ease both;
+  }
+  @media (max-width:600px){
+    .q{ margin:32px 0 22px; }
+  }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(9px); }
+    to{ opacity:1; transform:none; }
+  }
+
+  /* ---------- Matriz de respuestas ---------- */
+
+  .opts{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    animation:fadeUp .32s ease both;
+    animation-delay:.05s;
+  }
+  @media (max-width:560px){
+    .opts{ grid-template-columns:1fr; gap:9px; }
+  }
+
+  .opt{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-height:76px;
+    text-align:left;
+    font:inherit;
+    color:inherit;
+    padding:16px 18px;
+    border:2px solid transparent;
+    border-radius:var(--radius);
+    cursor:pointer;
+    transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+  }
+  .opt:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(0,0,0,.07);
+  }
+
+  .opt[data-k="0"]{ background:var(--o1-bg); border-color:var(--o1-bd); }
+  .opt[data-k="1"]{ background:var(--o2-bg); border-color:var(--o2-bd); }
+  .opt[data-k="2"]{ background:var(--o3-bg); border-color:var(--o3-bd); }
+  .opt[data-k="3"]{ background:var(--o4-bg); border-color:var(--o4-bd); }
+
+  .opt .emoji{
+    flex:none;
+    font-size:var(--fs-emo);
+    line-height:1;
+    display:grid;
+    place-items:center;
+    width:calc(var(--fs-emo) + 10px);
+    height:calc(var(--fs-emo) + 10px);
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.08));
+  }
+  .opt .emoji.txt{
+    font-size:calc(var(--fs-emo) - 4px);
+    font-weight:800;
+    letter-spacing:0;
+    filter:none;
+    background:rgba(255,255,255,.55);
+    border-radius:50%;
+  }
+  :root[data-theme="arcade"] .opt .emoji.txt{
+    background:rgba(255,255,255,.08);
+  }
+
+  .opt .t{
+    flex:1;
+    font-size:var(--fs-opt);
+    font-weight:600;
+    line-height:1.4;
+  }
+
+  .opt.sel{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft), 0 10px 22px rgba(0,0,0,.08);
+    transform:translateY(-2px);
+  }
+  .opt.sel::after{
+    content:"✓";
+    position:absolute;
+    top:8px; right:11px;
+    font-size:13px;
+    font-weight:800;
+    color:var(--accent);
+    line-height:1;
+  }
+
+  /* ---------- Nav ---------- */
+
+  .nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    margin-top:48px;
+  }
+  .nav button{
+    background:none;
+    border:0;
+    border-bottom:1px solid var(--ink);
+    font:inherit;
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink);
+    padding:8px 0;
+    cursor:pointer;
+    transition:opacity .14s ease, color .14s ease, border-color .14s ease;
+  }
+  .nav button:hover{ opacity:.55; }
+  .nav button:disabled{
+    color:var(--faint);
+    border-bottom-color:transparent;
+    cursor:default;
+    opacity:1;
+  }
+  #next, #fin{
+    color:var(--accent);
+    border-bottom-color:var(--accent);
+  }
+
+  .ghost{
+    display:block;
+    margin:62px auto 0;
+    background:none;
+    border:0;
+    font:inherit;
+    font-size:12px;
+    letter-spacing:.06em;
+    color:var(--faint);
+    cursor:pointer;
+  }
+  .ghost:hover{ color:var(--soft); text-decoration:underline; }
+
+  /* ============================================================
+     RESULTADOS
+     ============================================================ */
+
+  .bignum{
+    font-size:76px;
+    font-weight:800;
+    letter-spacing:-.05em;
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+    color:var(--accent);
+    text-shadow:0 4px 24px var(--accent-soft);
+  }
+  .bigsub{
+    font-size:14px;
+    color:var(--soft);
+    margin-top:12px;
+  }
+
+  /* ---------- Pista ---------- */
+
+  .track{ padding:0 16px; margin-top:26px; }
+
+  .track-inner{
+    position:relative;
+    height:56px;
+  }
+  .track-inner::before{
+    content:"";
+    position:absolute;
+    left:-16px; right:-16px; bottom:8px;
+    height:12px;
+    background-image:var(--track-tex);
+    pointer-events:none;
+  }
+
+  .track-base{
+    position:absolute;
+    left:0; right:0; bottom:12px;
+    height:3px;
+    background:var(--line2);
+  }
+  .track-fill{
+    position:absolute;
+    left:0; bottom:12px;
+    height:3px;
+    background:linear-gradient(90deg, var(--low), var(--mid), var(--ok));
+    transition:width 1.1s cubic-bezier(.25,.9,.3,1);
+  }
+
+  .runner{
+    position:absolute;
+    bottom:13px;
+    font-size:26px;
+    line-height:1;
+    user-select:none;
+    transform:translateX(-50%) scaleX(-1);
+    transition:left 1.1s cubic-bezier(.25,.9,.3,1);
+    filter:drop-shadow(0 3px 5px rgba(0,0,0,.14));
+  }
+
+  .scale{
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--faint);
+    margin-top:6px;
+    font-weight:700;
+  }
+  .scale span:nth-child(1){ color:var(--low); }
+  .scale span:nth-child(2){ color:var(--mid); }
+  .scale span:nth-child(3){ color:var(--ok); }
+
+  /* ---------- Bloques de nivel ---------- */
+
+  .lvl{
+    margin-top:58px;
+    padding-top:34px;
+    border-top:1px solid var(--line);
+    position:relative;
+  }
+  .lvl::before{
+    content:"";
+    position:absolute;
+    top:-2px; left:0;
+    width:56px;
+    height:3px;
+    background:var(--accent);
+  }
+
+  .lvlhead{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:16px;
+  }
+  .lvlhead h2{
+    font-size:16px;
+    font-weight:800;
+    letter-spacing:-.01em;
+    margin:0;
+  }
+  .lvlpct{
+    font-size:24px;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:-.02em;
+  }
+  .lvlpct.p-alto{ color:var(--ok); }
+  .lvlpct.p-mid{ color:var(--mid); }
+  .lvlpct.p-bajo{ color:var(--low); }
+
+  .verdict{
+    font-size:14px;
+    color:var(--soft);
+    margin:22px 0 26px;
+    max-width:56ch;
+  }
+
+  .cats{ display:flex; flex-direction:column; }
+
+  .cat{
+    display:grid;
+    grid-template-columns:1fr 130px 56px;
+    align-items:center;
+    gap:16px;
+    padding:10px 0;
+    border-bottom:1px solid var(--line2);
+  }
+  .catname{ font-size:14px; }
+  .minibar{
+    display:block;
+    height:5px;
+    background:var(--line2);
+    position:relative;
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .minibar i{
+    position:absolute;
+    top:0; left:0; bottom:0;
+    display:block;
+    transition:width .6s cubic-bezier(.3,.9,.3,1);
+  }
+  .minibar i.m-alto{ background:var(--ok); }
+  .minibar i.m-mid{ background:var(--mid); }
+  .minibar i.m-bajo{ background:var(--low); }
+
+  .catpct{
+    font-size:12px;
+    color:var(--soft);
+    text-align:right;
+    font-variant-numeric:tabular-nums;
+    font-weight:700;
+  }
+  @media (max-width:600px){
+    .cat{ grid-template-columns:1fr 70px 48px; gap:10px; }
+    .catname{ font-size:13px; }
+  }
+
+  /* ---------- Mapa de progreso ---------- */
+
+  .plan{
+    margin-top:68px;
+    padding-top:34px;
+    border-top:1px solid var(--line);
+  }
+  .plan h2{
+    font-size:16px;
+    font-weight:800;
+    letter-spacing:-.01em;
+    margin:0 0 8px;
+  }
+  .plan .sub{
+    font-size:14px;
+    color:var(--soft);
+    margin:0 0 30px;
+    max-width:58ch;
+  }
+
+  .group{ margin-bottom:30px; }
+  .group h3{
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:800;
+    margin:0 0 10px;
+    padding-left:11px;
+    position:relative;
+  }
+  .group h3::before{
+    content:"";
+    position:absolute;
+    left:0; top:3px; bottom:3px;
+    width:4px;
+    border-radius:var(--radius);
+  }
+  .group.g-fort h3{ color:var(--ok); }
+  .group.g-fort h3::before{ background:var(--ok); }
+  .group.g-proc h3{ color:var(--mid); }
+  .group.g-proc h3::before{ background:var(--mid); }
+  .group.g-deb  h3{ color:var(--low); }
+  .group.g-deb  h3::before{ background:var(--low); }
+
+  .item{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:18px;
+    padding:9px 0;
+    border-bottom:1px solid var(--line2);
+    font-size:14px;
+  }
+  .item .tag{
+    flex:none;
+    font-size:12px;
+    color:var(--faint);
+    font-variant-numeric:tabular-nums;
+    font-weight:700;
+  }
+  .empty{
+    font-size:13px;
+    color:var(--faint);
+    font-style:italic;
+  }
+
+  /* ---------- Detalle ---------- */
+
+  details{
+    margin-top:68px;
+    padding-top:34px;
+    border-top:1px solid var(--line);
+  }
+  summary{
+    cursor:pointer;
+    font-size:13px;
+    color:var(--soft);
+    list-style:none;
+    user-select:none;
+    font-weight:700;
+  }
+  summary::-webkit-details-marker{ display:none; }
+  summary::before{ content:"+  "; color:var(--accent); font-weight:800; }
+  details[open] summary::before{ content:"–  "; }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:22px;
+    font-size:13px;
+  }
+  th,td{
+    text-align:left;
+    padding:9px 12px 9px 0;
+    border-bottom:1px solid var(--line2);
+    vertical-align:top;
+  }
+  th{
+    font-size:10px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-weight:800;
+  }
+  td.num{ font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .mk-ok{ color:var(--ok); font-weight:800; }
+  .mk-no{ color:var(--low); font-weight:800; }
+  .mk-bl{ color:var(--faint); }
+
+  .actions{
+    margin-top:60px;
+    display:flex;
+    gap:26px;
+    flex-wrap:wrap;
+  }
+  .actions button{
+    background:none;
+    border:0;
+    border-bottom:1px solid var(--ink);
+    font:inherit;
+    font-size:14px;
+    font-weight:600;
+    padding:8px 0;
+    cursor:pointer;
+  }
+  .actions button:hover{ opacity:.55; }
+  .actions button#print{
+    color:var(--accent);
+    border-bottom-color:var(--accent);
+  }
+
+  /* ============================================================
+     IMPRESIÓN
+     ============================================================ */
+
+  @media print{
+    :root[data-theme]{
+      --bg:#fff; --surface:#fff; --ink:#000; --soft:#444; --faint:#777;
+      --line:#ddd; --line2:#eee; --sel:#f2f2f2;
+      --accent:#000; --accent-soft:#eee;
+      --ok:#2F6B45; --mid:#8A6A16; --low:#9C3B25;
+      --o1-bg:#fff; --o1-bd:#ccc;
+      --o2-bg:#fff; --o2-bd:#ccc;
+      --o3-bg:#fff; --o3-bd:#ccc;
+      --o4-bg:#fff; --o4-bd:#ccc;
+      --track-tex:none; --shadow:none; --radius:0px;
+    }
+    body{ background:#fff; }
+    .gear,.panel,.nav,.ghost,.actions{ display:none !important; }
+    .wrap{ padding:0; max-width:none; }
+    .lvl,.plan,details{ break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+<button class="gear" id="gear" aria-label="Ajustes" aria-expanded="false">
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none"
+       stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+    <path d="M2 4h3M9 4h5"/>
+    <path d="M2 8h7M12.8 8h1.2"/>
+    <path d="M2 12h1.2M7 12h7"/>
+    <circle cx="7" cy="4" r="1.8"/>
+    <circle cx="11" cy="8" r="1.8"/>
+    <circle cx="5" cy="12" r="1.8"/>
+  </svg>
+</button>
+
+<div class="panel" id="panel" hidden>
+  <p class="panel-title">Estilo</p>
+  <div id="swatches"></div>
+
+  <p class="panel-title">Tamaño de letra</p>
+  <div class="sizes" id="sizes">
+    <button data-size="s">A</button>
+    <button data-size="m">A</button>
+    <button data-size="l">A</button>
+    <button data-size="xl">A</button>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<script>
+/* ============================================================
+   BANCO DE PREGUNTAS
+   ============================================================ */
+
+const DATA = [
+  /* ===================== NIVEL 1 — FUNDAMENTOS ===================== */
+  {
+    nombre: "Nivel 1",
+    sub: "Fundamentos",
+    preguntas: [
+      { cat:"Aritmética y signos",
+        q:"¿Cuál es el resultado de  8 + 2 × (5 − 3)² ?",
+        ops:["16","20","40","9"], ok:0 },
+      { cat:"Aritmética y signos",
+        q:"¿Cuál es el resultado de  (−3) − (−7) + (−2) ?",
+        ops:["2","−12","−8","12"], ok:0 },
+      { cat:"Fracciones y racionales",
+        q:"¿Cuánto es  2/3 + 1/4 ?",
+        ops:["11/12","3/7","3/12","11/7"], ok:0 },
+      { cat:"Porcentajes y proporcionalidad",
+        q:"Un artículo cuesta $80 y tiene un 25% de descuento. ¿Cuánto se paga al final?",
+        ops:["$60","$20","$55","$75"], ok:0 },
+      { cat:"Potencias y raíces",
+        q:"¿Cuánto es  2³ × 2² ?",
+        ops:["32","64","16","10"], ok:0 },
+      { cat:"Potencias y raíces",
+        q:"¿Cuánto es  √144 ?",
+        ops:["12","14","72","24"], ok:0 },
+      { cat:"Álgebra básica",
+        q:"«El doble de un número, aumentado en 5» se escribe como:",
+        ops:["2x + 5","2(x + 5)","2x − 5","x² + 5"], ok:0 },
+      { cat:"Álgebra básica",
+        q:"Resuelve:  3x − 7 = 11",
+        ops:["x = 6","x = 4/3","x = 18","x = 4"], ok:0 },
+      { cat:"Porcentajes y proporcionalidad",
+        q:"Si 3 lápices cuestan $12, ¿cuánto cuestan 5 lápices del mismo tipo?",
+        ops:["$20","$15","$24","$60"], ok:0 },
+      { cat:"Geometría",
+        q:"Un rectángulo mide 8 cm de largo y 5 cm de ancho. ¿Cuál es su perímetro?",
+        ops:["26 cm","40 cm","13 cm","21 cm"], ok:0 },
+      { cat:"Geometría",
+        q:"Un triángulo tiene base 10 cm y altura 6 cm. ¿Cuál es su área?",
+        ops:["30 cm²","60 cm²","16 cm²","15 cm²"], ok:0 },
+      { cat:"Fracciones y racionales",
+        q:"¿Cuál de estos números es mayor?",
+        ops:["−0.4","−1/2","Son iguales","No se pueden comparar"], ok:0 },
+      { cat:"Aritmética y signos",
+        q:"¿Cuánto es  0.25 × 0.4 ?",
+        ops:["0.1","0.01","1","0.65"], ok:0 },
+      { cat:"Aritmética y signos",
+        q:"¿Cuál es el mínimo común múltiplo de 6 y 8?",
+        ops:["24","48","2","14"], ok:0 },
+      { cat:"Álgebra básica",
+        q:"Si a = 3 y b = −2, ¿cuánto vale  a² − b ?",
+        ops:["11","7","5","1"], ok:0 },
+      { cat:"Datos y modelación",
+        q:"¿Cuál es el promedio de 4, 7, 9 y 12?",
+        ops:["8","32","10.5","7"], ok:0 },
+      { cat:"Geometría",
+        q:"En un triángulo, dos de sus ángulos miden 65° y 45°. ¿Cuánto mide el tercero?",
+        ops:["70°","110°","60°","250°"], ok:0 },
+      { cat:"Potencias y raíces",
+        q:"¿Cuál es el valor de  3.5 × 10³ ?",
+        ops:["3500","350","35 000","3050"], ok:0 },
+      { cat:"Datos y modelación",
+        q:"Una bicicleta cuesta $5 la primera hora, $10 por dos horas, $15 por tres horas y $20 por cuatro horas. ¿Qué relación describe el costo?",
+        ops:["costo = 5 × horas","costo = horas + 4","costo = 5 + horas","costo = horas² + 4"], ok:0 },
+      { cat:"Porcentajes y proporcionalidad",
+        q:"En un mapa la escala es 1 : 100 000. Si dos pueblos están a 4 cm en el mapa, ¿qué distancia los separa en la realidad?",
+        ops:["4 km","40 km","400 km","0.4 km"], ok:0 }
+    ]
+  },
+
+  /* ===================== NIVEL 2 — INTERMEDIO ===================== */
+  {
+    nombre: "Nivel 2",
+    sub: "Intermedio",
+    preguntas: [
+      { cat:"Ecuaciones y sistemas",
+        q:"Resuelve:  2(x − 3) = 4x + 8",
+        ops:["x = −7","x = 1","x = −1","x = 7"], ok:0 },
+      { cat:"Ecuaciones y sistemas",
+        q:"Si  x + y = 10  y  x − y = 4, ¿cuánto vale  x · y ?",
+        ops:["21","24","7","25"], ok:0 },
+      { cat:"Polinomios y factorización",
+        q:"Si x ≠ 2, ¿a qué es igual  (x² − 4) / (x − 2) ?",
+        ops:["x + 2","x − 2","x² − 2","2x"], ok:0 },
+      { cat:"Polinomios y factorización",
+        q:"¿Cuál es el desarrollo de  (x + 5)² ?",
+        ops:["x² + 10x + 25","x² + 25","x² + 5x + 25","x² + 10x + 10"], ok:0 },
+      { cat:"Polinomios y factorización",
+        q:"¿Cuál es la factorización de  x² − 9 ?",
+        ops:["(x − 3)(x + 3)","(x − 3)²","(x − 9)(x + 1)","(x + 3)²"], ok:0 },
+      { cat:"Proporcionalidad y porcentajes",
+        q:"Después de aplicarle un 20% de descuento, un producto quedó en $64. ¿Cuál era su precio original?",
+        ops:["$80","$76.80","$84","$128"], ok:0 },
+      { cat:"Proporcionalidad y porcentajes",
+        q:"Se depositan $1000 al 5% de interés simple anual. ¿Cuánto interés se gana en 3 años?",
+        ops:["$150","$50","$1150","$300"], ok:0 },
+      { cat:"Proporcionalidad y porcentajes",
+        q:"Si 6 obreros tardan 12 días en hacer una obra, ¿cuánto tardarán 9 obreros trabajando al mismo ritmo?",
+        ops:["8 días","18 días","6 días","9 días"], ok:0 },
+      { cat:"Ecuaciones y sistemas",
+        q:"Resuelve:   x/3 + x/4 = 7",
+        ops:["x = 12","x = 7","x = 24","x = 3"], ok:0 },
+      { cat:"Funciones y gráficas",
+        q:"¿Cuál es la pendiente de la recta que pasa por los puntos (1, 2) y (4, 11)?",
+        ops:["3","1/3","9","−3"], ok:0 },
+      { cat:"Ecuaciones y sistemas",
+        q:"Si  −2x > 6 , entonces:",
+        ops:["x < −3","x > −3","x < 3","x > 3"], ok:0 },
+      { cat:"Potencias y raíces",
+        q:"¿Cuál es la forma simplificada de  √50 ?",
+        ops:["5√2","25√2","2√5","10√5"], ok:0 },
+      { cat:"Potencias y raíces",
+        q:"¿Cuánto es  2⁻³ ?",
+        ops:["1/8","−8","−6","8"], ok:0 },
+      { cat:"Geometría",
+        q:"Un triángulo rectángulo tiene catetos de 6 cm y 8 cm. ¿Cuánto mide la hipotenusa?",
+        ops:["10 cm","14 cm","48 cm","100 cm"], ok:0 },
+      { cat:"Geometría",
+        q:"¿Cuál es el área de un círculo de radio 5 cm?",
+        ops:["25π cm²","10π cm²","5π cm²","50π cm²"], ok:0 },
+      { cat:"Geometría",
+        q:"Dos triángulos son semejantes. Los lados del menor miden 3, 4 y 5 cm. Si el lado del mayor que corresponde al de 3 cm mide 9 cm, ¿cuál es el perímetro del mayor?",
+        ops:["36 cm","27 cm","45 cm","18 cm"], ok:0 },
+      { cat:"Geometría",
+        q:"¿Cuál es el volumen de un cubo de 4 cm de arista?",
+        ops:["64 cm³","16 cm³","48 cm³","96 cm³"], ok:0 },
+      { cat:"Estadística y probabilidad",
+        q:"¿Cuál es la mediana del conjunto  3, 7, 8, 5, 12, 9 ?",
+        ops:["7.5","8","7","9"], ok:0 },
+      { cat:"Estadística y probabilidad",
+        q:"Se lanza un dado de seis caras. ¿Cuál es la probabilidad de obtener un número primo?",
+        ops:["1/2","1/3","2/3","1/6"], ok:0 },
+      { cat:"Funciones y gráficas",
+        q:"Si  f(x) = 2x² − 3x , ¿cuánto vale  f(−2) ?",
+        ops:["14","2","−2","−14"], ok:0 }
+    ]
+  },
+
+  /* ===================== NIVEL 3 — AVANZADO ===================== */
+  {
+    nombre: "Nivel 3",
+    sub: "Avanzado",
+    preguntas: [
+      { cat:"Cuadráticas e inecuaciones",
+        q:"¿Cuáles son las soluciones de  x² − 5x + 6 = 0 ?",
+        ops:["x = 2 y x = 3","x = −2 y x = −3","x = 1 y x = 6","x = −1 y x = −6"], ok:0 },
+      { cat:"Cuadráticas e inecuaciones",
+        q:"¿Cuál es el vértice de la parábola  y = x² − 4x + 1 ?",
+        ops:["(2, −3)","(−2, −3)","(2, 3)","(4, 1)"], ok:0 },
+      { cat:"Logaritmos y exponenciales",
+        q:"¿Cuánto vale  log₂ 32 ?",
+        ops:["5","4","16","6"], ok:0 },
+      { cat:"Radicales y valor absoluto",
+        q:"Resuelve:   √(x + 5) = x − 1",
+        ops:["x = 4","x = −1","x = 4 y x = −1","No tiene solución"], ok:0 },
+      { cat:"Sucesiones",
+        q:"¿Cuál es el siguiente término de la sucesión  2, 6, 12, 20, 30, ... ?",
+        ops:["42","40","36","44"], ok:0 },
+      { cat:"Sucesiones",
+        q:"En la progresión aritmética  3, 7, 11, 15, ...  ¿cuál es el término número 20?",
+        ops:["79","83","80","76"], ok:0 },
+      { cat:"Sucesiones",
+        q:"¿Cuál es el resultado de la suma  1 + 2 + 4 + 8 + ... + 512 ?",
+        ops:["1023","1024","511","2047"], ok:0 },
+      { cat:"Trigonometría",
+        q:"En un triángulo rectángulo, el cateto opuesto a θ mide 3 y la hipotenusa mide 5. ¿Cuánto vale sen θ?",
+        ops:["3/5","4/5","3/4","5/3"], ok:0 },
+      { cat:"Trigonometría",
+        q:"Si  sen θ = 3/5  y θ está en el primer cuadrante, ¿cuánto vale  cos θ ?",
+        ops:["4/5","−4/5","5/3","16/25"], ok:0 },
+      { cat:"Funciones",
+        q:"¿Cuál es el dominio de  f(x) = √(x − 2) ?",
+        ops:["x ≥ 2","x > 2","x ≤ 2","Todos los números reales"], ok:0 },
+      { cat:"Cuadráticas e inecuaciones",
+        q:"¿Para qué valores de x se cumple  x² − x − 6 > 0 ?",
+        ops:["x < −2  o  x > 3","−2 < x < 3","x > 3","x < −2"], ok:0 },
+      { cat:"Radicales y valor absoluto",
+        q:"Resuelve:   |2x − 6| = 10",
+        ops:["x = 8  o  x = −2","x = 8","x = −2","x = 2  o  x = −8"], ok:0 },
+      { cat:"Funciones",
+        q:"Si  f(x) = 2x + 1  y  g(x) = x², ¿cuánto vale  f(g(3)) ?",
+        ops:["19","49","37","13"], ok:0 },
+      { cat:"Funciones",
+        q:"¿Cuál es la función inversa de  f(x) = 3x − 6 ?",
+        ops:["(x + 6)/3","(x − 6)/3","3x + 6","1/(3x − 6)"], ok:0 },
+      { cat:"Geometría analítica",
+        q:"¿Cuál es la distancia entre los puntos (1, 2) y (4, 6)?",
+        ops:["5","7","√7","25"], ok:0 },
+      { cat:"Geometría analítica",
+        q:"Con 40 metros de cerca se quiere cercar un terreno rectangular de área máxima. ¿Cuál es esa área máxima?",
+        ops:["100 m²","400 m²","200 m²","80 m²"], ok:0 },
+      { cat:"Probabilidad y conteo",
+        q:"¿Cuántos números de 3 cifras distintas se pueden formar con los dígitos 1, 2, 3, 4 y 5?",
+        ops:["60","125","10","20"], ok:0 },
+      { cat:"Probabilidad y conteo",
+        q:"Se lanzan dos dados de seis caras. ¿Cuál es la probabilidad de que la suma de sus caras sea 7?",
+        ops:["1/6","1/12","7/36","1/36"], ok:0 },
+      { cat:"Logaritmos y exponenciales",
+        q:"Resuelve:   2^(x + 1) = 32",
+        ops:["x = 4","x = 5","x = 16","x = 6"], ok:0 },
+      { cat:"Logaritmos y exponenciales",
+        q:"Una población de bacterias se duplica cada 3 horas. Si ahora hay 500, ¿cuántas habrá dentro de 9 horas?",
+        ops:["4000","1500","4500","8000"], ok:0 },
+      { cat:"Logaritmos y exponenciales",
+        q:"Resuelve:   log(x) + log(2) = 1",
+        ops:["x = 5","x = 8","x = 10","x = 0.5"], ok:0 }
+    ]
+  }
+];
+
+/* ============================================================
+   TEMAS VISUALES
+   Cada tema define sus emojis por opción (o letras), sus
+   colores de muestra para el panel y su etiqueta.
+   ============================================================ */
+
+const THEMES = [
+  {
+    id:'clasico',
+    nombre:'Clásico',
+    sub:'papel y tinta',
+    colores:['#FBFAF7','#16150F','#C2622E'],
+    emojis:['A','B','C','D'],
+    esTexto:true
+  },
+  {
+    id:'futbol',
+    nombre:'Arquero',
+    sub:'cancha y guantes',
+    colores:['#F0F7EF','#1E8A4C','#C99A16'],
+    emojis:['⚽','🥅','🧤','👟'],
+    esTexto:false
+  },
+  {
+    id:'kawaii',
+    nombre:'Kawaii',
+    sub:'pastel y suave',
+    colores:['#FFF5F9','#F06A9B','#5BB98C'],
+    emojis:['💖','🌸','⭐','🎀'],
+    esTexto:false
+  },
+  {
+    id:'arcade',
+    nombre:'Arcade',
+    sub:'modo nocturno',
+    colores:['#12121B','#8B7CFF','#3DDC97'],
+    emojis:['🎮','👾','🕹️','🚀'],
+    esTexto:false
+  }
+];
+
+const LS_THEME = 'diag-theme';
+const LS_SIZE  = 'diag-size';
+
+function leerLS(clave, permitidos, def){
+  try{
+    const v = localStorage.getItem(clave);
+    if(v && permitidos.includes(v)) return v;
+  }catch(e){}
+  return def;
+}
+function guardarLS(clave, valor){
+  try{ localStorage.setItem(clave, valor); }catch(e){}
+}
+
+let TEMA_ACTUAL = 'clasico';
+
+function temaActual(){
+  return THEMES.find(t => t.id === TEMA_ACTUAL) || THEMES[0];
+}
+
+function aplicarTema(id){
+  TEMA_ACTUAL = id;
+  document.documentElement.setAttribute('data-theme', id);
+  guardarLS(LS_THEME, id);
+  marcarTemaActivo(id);
+}
+
+function aplicarSize(id){
+  document.documentElement.setAttribute('data-size', id);
+  guardarLS(LS_SIZE, id);
+  marcarSizeActivo(id);
+}
+
+/* ============================================================
+   PANEL DE AJUSTES
+   ============================================================ */
+
+const gear     = document.getElementById('gear');
+const panel    = document.getElementById('panel');
+const swatches = document.getElementById('swatches');
+const sizesBox = document.getElementById('sizes');
+
+swatches.innerHTML = THEMES.map(t => `
+  <button class="swatch" data-id="${t.id}">
+    <span class="dots">
+      ${t.colores.map(c => `<i style="background:${c}"></i>`).join('')}
+    </span>
+    <span class="sw-text">
+      <b>${t.nombre}</b>
+      <small>${t.sub}</small>
+    </span>
+  </button>
+`).join('');
+
+swatches.querySelectorAll('.swatch').forEach(b => {
+  b.onclick = () => aplicarTema(b.dataset.id);
+});
+
+sizesBox.querySelectorAll('button').forEach(b => {
+  b.onclick = () => aplicarSize(b.dataset.size);
+});
+
+function marcarTemaActivo(id){
+  swatches.querySelectorAll('.swatch').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === id);
+  });
+}
+function marcarSizeActivo(id){
+  sizesBox.querySelectorAll('button').forEach(b => {
+    b.classList.toggle('active', b.dataset.size === id);
+  });
+}
+
+function cerrarPanel(){
+  panel.hidden = true;
+  gear.classList.remove('on');
+  gear.setAttribute('aria-expanded', 'false');
+}
+
+gear.onclick = e => {
+  e.stopPropagation();
+  const abierto = !panel.hidden;
+  panel.hidden = abierto;
+  gear.classList.toggle('on', !abierto);
+  gear.setAttribute('aria-expanded', String(!abierto));
+};
+
+document.addEventListener('click', e => {
+  if(panel.hidden) return;
+  if(panel.contains(e.target) || gear.contains(e.target)) return;
+  cerrarPanel();
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && !panel.hidden) cerrarPanel();
+});
+
+/* ============================================================
+   MOTOR
+   ============================================================ */
+
+const app = document.getElementById('app');
+const TOTAL = DATA.reduce((a, n) => a + n.preguntas.length, 0);
+
+let S = null;
+let pantalla = 'inicio';
+
+const esc = s => String(s).replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
+
+/* ---------------- Pantalla inicial ---------------- */
+
+function renderInicio() {
+  pantalla = 'inicio';
+  S = null;
+
+  app.innerHTML = `
+    <div class="wrap">
+      <p class="eyebrow">Test diagnóstico</p>
+      <h1>Evaluación inicial</h1>
+      <p class="lead">
+        ${TOTAL} preguntas organizadas en tres niveles.
+        Sin cronómetro y sin corrección a la vista:
+        la idea es ver <em>cómo</em> piensas, no qué tan rápido vas.
+      </p>
+
+      <div class="menu">
+        <button class="btn" data-modo="all">
+          <span class="t">Test completo</span>
+          <span class="s">Los tres niveles · ${TOTAL} preguntas</span>
+        </button>
+        ${DATA.map((n, i) => `
+          <button class="btn" data-modo="${i}">
+            <span class="t">${esc(n.nombre)} · ${esc(n.sub)}</span>
+            <span class="s">${n.preguntas.length} preguntas</span>
+          </button>`).join('')}
+      </div>
+
+      <p class="foot">Al terminar se genera un diagnóstico por nivel y por tema.</p>
+    </div>`;
+
+  app.querySelectorAll('.btn').forEach(b => {
+    b.onclick = () => {
+      const m = b.dataset.modo;
+      start(m === 'all' ? 'all' : Number(m));
+    };
+  });
+}
+
+/* ---------------- Iniciar ---------------- */
+
+function start(modo) {
+  const cola = [];
+  DATA.forEach((n, ni) => {
+    if (modo !== 'all' && ni !== modo) return;
+    n.preguntas.forEach((p, pi) => cola.push({ ni, pi }));
+  });
+
+  S = {
+    cola,
+    i: 0,
+    resp: new Array(cola.length).fill(null),
+    modo
+  };
+
+  renderTest();
+}
+
+/* ---------------- Pregunta ---------------- */
+
+function renderTest() {
+  pantalla = 'test';
+
+  const { cola, i, resp } = S;
+  const item  = cola[i];
+  const nivel = DATA[item.ni];
+  const p     = nivel.preguntas[item.pi];
+  const total = cola.length;
+  const pct   = ((i + 1) / total) * 100;
+
+  const tema = temaActual();
+  const emojis = tema.emojis;
+  const clase = tema.esTexto ? 'emoji txt' : 'emoji';
+
+  app.innerHTML = `
+    <div class="wrap">
+      <div class="meta">
+        <span class="pill">${esc(nivel.nombre)} · ${esc(nivel.sub)}</span>
+        <span>${i + 1} / ${total}</span>
+      </div>
+
+      <div class="bar"><i style="width:${pct}%"></i></div>
+
+      <div class="q">${esc(p.q)}</div>
+
+      <div class="opts">
+        ${p.ops.map((o, k) => `
+          <button class="opt${resp[i] === k ? ' sel' : ''}" data-k="${k}">
+            <span class="${clase}">${emojis[k]}</span>
+            <span class="t">${esc(o)}</span>
+          </button>`).join('')}
+      </div>
+
+      <div class="nav">
+        <button id="prev" ${i === 0 ? 'disabled' : ''}>← Anterior</button>
+        ${i === total - 1
+          ? '<button id="fin">Ver resultados →</button>'
+          : '<button id="next">Siguiente →</button>'}
+      </div>
+
+      <button class="ghost" id="abort">Terminar el test ahora</button>
+    </div>`;
+
+  app.querySelectorAll('.opt').forEach(b => {
+    b.onclick = () => {
+      S.resp[S.i] = Number(b.dataset.k);
+      renderTest();
+    };
+  });
+
+  const prev = app.querySelector('#prev');
+  if (prev) prev.onclick = () => { S.i--; renderTest(); };
+
+  const next = app.querySelector('#next');
+  if (next) next.onclick = () => { S.i++; renderTest(); };
+
+  const fin = app.querySelector('#fin');
+  if (fin) fin.onclick = renderResultados;
+
+  app.querySelector('#abort').onclick = renderResultados;
+
+  window.scrollTo(0, 0);
+}
+
+/* ---------------- Atajos ---------------- */
+
+document.addEventListener('keydown', e => {
+  if (pantalla !== 'test' || !S) return;
+
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= 4) {
+    const opts = document.querySelectorAll('.opt');
+    if (opts[n - 1]) {
+      S.resp[S.i] = n - 1;
+      renderTest();
+    }
+    return;
+  }
+  if (e.key === 'ArrowRight' && S.i < S.cola.length - 1) { S.i++; renderTest(); }
+  if (e.key === 'ArrowLeft'  && S.i > 0)                 { S.i--; renderTest(); }
+});
+
+/* ---------------- Cálculo ---------------- */
+
+function calcular() {
+  const niveles = DATA.map(n => ({
+    nombre: n.nombre,
+    sub: n.sub,
+    total: 0,
+    ok: 0,
+    cats: {}
+  }));
+
+  S.cola.forEach((item, i) => {
+    const p = DATA[item.ni].preguntas[item.pi];
+    const L = niveles[item.ni];
+
+    L.total++;
+    const bien = S.resp[i] === p.ok;
+    if (bien) L.ok++;
+
+    if (!L.cats[p.cat]) L.cats[p.cat] = { total: 0, ok: 0 };
+    L.cats[p.cat].total++;
+    if (bien) L.cats[p.cat].ok++;
+  });
+
+  return niveles.filter(L => L.total > 0);
+}
+
+function clasePct(pct){
+  if (pct >= 75) return 'alto';
+  if (pct >= 50) return 'mid';
+  return 'bajo';
+}
+
+function veredictoNivel(pct) {
+  if (pct >= 85) return 'Lo tienes dominado. Puedes moverte a retos más grandes sin problema.';
+  if (pct >= 70) return 'Vas muy bien. Solo quedan un par de detalles por afinar.';
+  if (pct >= 50) return 'Vas creciendo. Ya reconoces el camino; ahora toca practicarlo más.';
+  return 'Apenas comenzando. Es normal: aquí es donde más se aprende.';
+}
+
+/* ---------------- Animación ---------------- */
+
+function animarTracks(root){
+  const items = root.querySelectorAll('[data-pct]');
+  items.forEach((el, idx) => {
+    const pct  = el.dataset.pct;
+    const fill = el.querySelector('.track-fill');
+    const run  = el.querySelector('.runner');
+
+    if(fill) fill.style.width = '0%';
+    if(run)  run.style.left   = '0%';
+
+    setTimeout(() => {
+      if(fill) fill.style.width = pct + '%';
+      if(run)  run.style.left   = pct + '%';
+    }, 160 + idx * 160);
+  });
+}
+
+/* ---------------- Resultados ---------------- */
+
+function renderResultados() {
+  pantalla = 'resultado';
+
+  const niveles   = calcular();
+  const okTotal   = niveles.reduce((a, L) => a + L.ok, 0);
+  const qTotal    = niveles.reduce((a, L) => a + L.total, 0);
+  const pctGlobal = Math.round((okTotal / qTotal) * 100);
+
+  /* --- clasificación --- */
+  const planas = [];
+  niveles.forEach(L => {
+    Object.entries(L.cats).forEach(([nombre, c]) => {
+      planas.push({
+        nivel: L.nombre,
+        nombre,
+        ok: c.ok,
+        total: c.total,
+        pct: Math.round((c.ok / c.total) * 100)
+      });
+    });
+  });
+
+  const dominados    = planas.filter(c => c.pct >= 75);
+  const construyendo = planas.filter(c => c.pct >= 50 && c.pct < 75);
+  const comenzando   = planas.filter(c => c.pct < 50);
+
+  /* --- bloques por nivel --- */
+  const bloquesNivel = niveles.map(L => {
+    const pct  = Math.round((L.ok / L.total) * 100);
+    const cls  = clasePct(pct);
+
+    const cats = Object.entries(L.cats)
+      .map(([nombre, c]) => {
+        const cp = Math.round((c.ok / c.total) * 100);
+        return { nombre, ok: c.ok, total: c.total, pct: cp, cls: clasePct(cp) };
+      })
+      .sort((a, b) => a.pct - b.pct);
+
+    return `
+      <section class="lvl">
+        <div class="lvlhead">
+          <h2>${esc(L.nombre)} · ${esc(L.sub)}</h2>
+          <span class="lvlpct p-${cls}">${pct}%</span>
+        </div>
+
+        <div class="track">
+          <div class="track-inner" data-pct="${pct}">
+            <div class="track-base"></div>
+            <div class="track-fill" style="width:${pct}%"></div>
+            <div class="runner" style="left:${pct}%">🏃</div>
+          </div>
+        </div>
+        <div class="scale">
+          <span>Comenzando</span><span>Creciendo</span><span>Dominando</span>
+        </div>
+
+        <p class="verdict">${veredictoNivel(pct)}</p>
+
+        <div class="cats">
+          ${cats.map(c => `
+            <div class="cat">
+              <span class="catname">${esc(c.nombre)}</span>
+              <span class="minibar"><i class="m-${c.cls}" style="width:${c.pct}%"></i></span>
+              <span class="catpct">${c.ok}/${c.total}</span>
+            </div>`).join('')}
+        </div>
+      </section>`;
+  }).join('');
+
+  /* --- listas --- */
+  const lista = (arr, vacio) => {
+    if (!arr.length) return `<p class="empty">${vacio}</p>`;
+    return arr.map(c => `
+      <div class="item">
+        <span>${esc(c.nombre)} <span style="color:var(--faint)">· ${esc(c.nivel)}</span></span>
+        <span class="tag">${c.ok}/${c.total} · ${c.pct}%</span>
+      </div>`).join('');
+  };
+
+  /* --- recomendación --- */
+  const n1 = niveles.find(L => L.nombre === 'Nivel 1');
+  const n2 = niveles.find(L => L.nombre === 'Nivel 2');
+  const n3 = niveles.find(L => L.nombre === 'Nivel 3');
+  const p  = L => L ? Math.round((L.ok / L.total) * 100) : null;
+
+  let recomendacion;
+  if (n1 && p(n1) < 60) {
+    recomendacion = 'Antes de avanzar, vale la pena dedicar unas sesiones a afianzar la base del Nivel 1. Con los fundamentos firmes, todo lo demás se hace mucho más llevadero.';
+  } else if (n2 && p(n2) < 60) {
+    recomendacion = 'Lo básico va bien encaminado. El siguiente tramo es el Nivel 2: ahí es donde más se nota el trabajo, y donde conviene concentrar las sesiones.';
+  } else if (n3 && p(n3) < 60) {
+    recomendacion = 'Los dos primeros niveles van sólidos. El trabajo fino está en lo avanzado, donde toca combinar varios conceptos a la vez.';
+  } else {
+    recomendacion = 'Vas muy bien en los tres niveles. El siguiente paso son problemas más largos, donde haya que justificar cada decisión.';
+  }
+
+  /* --- detalle --- */
+  const filas = S.cola.map((item, i) => {
+    const p2 = DATA[item.ni].preguntas[item.pi];
+    const r = S.resp[i];
+    const bien = r === p2.ok;
+    const marca = r === null
+      ? '<span class="mk-bl">—</span>'
+      : (bien ? '<span class="mk-ok">✓</span>' : '<span class="mk-no">✗</span>');
+
+    const texto = p2.q.length > 62 ? p2.q.slice(0, 60) + '…' : p2.q;
+
+    return `<tr>
+      <td class="num">${i + 1}</td>
+      <td>${esc(DATA[item.ni].nombre)}</td>
+      <td>${esc(texto)}</td>
+      <td class="num">${marca}</td>
+    </tr>`;
+  }).join('');
+
+  /* --- render --- */
+  app.innerHTML = `
+    <div class="wrap">
+      <p class="eyebrow">Diagnóstico</p>
+      <h1>Tu resultado</h1>
+
+      <div class="bignum">${pctGlobal}%</div>
+      <div class="bigsub">${okTotal} de ${qTotal} respuestas correctas</div>
+
+      <div class="track">
+        <div class="track-inner" data-pct="${pctGlobal}">
+          <div class="track-base"></div>
+          <div class="track-fill" style="width:${pctGlobal}%"></div>
+          <div class="runner" style="left:${pctGlobal}%">🏃</div>
+        </div>
+      </div>
+      <div class="scale">
+        <span>Comenzando</span><span>Creciendo</span><span>Dominando</span>
+      </div>
+
+      ${bloquesNivel}
+
+      <section class="plan">
+        <h2>Tu mapa de progreso</h2>
+        <p class="sub">${recomendacion}</p>
+
+        <div class="group g-fort">
+          <h3>Lo que ya dominas</h3>
+          ${lista(dominados, 'Aún no hay temas con dominio completo. Es normal al empezar.')}
+        </div>
+
+        <div class="group g-proc">
+          <h3>Lo que estás construyendo</h3>
+          ${lista(construyendo, 'Ningún tema quedó a medio camino.')}
+        </div>
+
+        <div class="group g-deb">
+          <h3>Hasta ahora, comenzando</h3>
+          ${lista(comenzando, 'Ningún tema apenas comenzando. ¡Buen inicio!')}
+        </div>
+      </section>
+
+      <details>
+        <summary>Detalle pregunta a pregunta</summary>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nivel</th>
+              <th>Pregunta</th>
+              <th>Res.</th>
+            </tr>
+          </thead>
+          <tbody>${filas}</tbody>
+        </table>
+      </details>
+
+      <div class="actions">
+        <button id="print">Imprimir / guardar PDF</button>
+        <button id="again">Volver a empezar</button>
+      </div>
+    </div>`;
+
+  app.querySelector('#print').onclick = () => window.print();
+  app.querySelector('#again').onclick = renderInicio;
+
+  animarTracks(app);
+  window.scrollTo(0, 0);
+}
+
+/* ============================================================
+   ARRANQUE
+   ============================================================ */
+
+aplicarTema(leerLS(LS_THEME, THEMES.map(t => t.id), 'clasico'));
+aplicarSize(leerLS(LS_SIZE, ['s','m','l','xl'], 'm'));
+renderInicio();
+</script>
+</body>
+</html>
