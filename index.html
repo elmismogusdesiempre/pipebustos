@@ -580,7 +580,6 @@
     transition:width 1.1s cubic-bezier(.25,.9,.3,1);
   }
 
-  /* Corredor temático: contenedor flexible con cuerpo (y opcional accesorio) */
   .runner{
     position:absolute;
     bottom:13px;
@@ -1055,39 +1054,268 @@
   }
 
   /* ============================================================
-     IMPRESIÓN
+     IMPRESIÓN — PDF ordenado, todas las pestañas, sin cortes
      ============================================================ */
 
+  @page{
+    size: A4;
+    margin: 16mm 14mm 18mm 14mm;
+  }
+
   @media print{
+    /* 1) Forzar paleta neutra para que el PDF sea legible siempre */
     :root[data-theme]{
-      --bg:#fff; --surface:#fff; --ink:#000; --soft:#444; --faint:#777;
-      --line:#ddd; --line2:#eee; --sel:#f2f2f2;
+      --bg:#fff; --surface:#fff; --ink:#111; --soft:#444; --faint:#666;
+      --line:#ccc; --line2:#e2e2e2; --sel:#f2f2f2;
       --accent:#000; --accent-soft:#eee;
-      --ok:#2F6B45; --ok-bg:#EEF6F0; --mid:#8A6A16;
-      --low:#9C3B25; --low-bg:#FBEDE9;
+      --ok:#1F6B3E; --ok-bg:#EDF6F0; --mid:#8A6A16;
+      --low:#9C3B25; --low-bg:#FBEEE9;
       --o1-bg:#fff; --o1-bd:#ccc;
       --o2-bg:#fff; --o2-bd:#ccc;
       --o3-bg:#fff; --o3-bd:#ccc;
       --o4-bg:#fff; --o4-bd:#ccc;
       --track-tex:none; --shadow:none; --radius:0px;
     }
-    body{ background:#fff; }
+
+    html, body{
+      background:#fff !important;
+      color:#111 !important;
+      font-size:12px !important;
+      line-height:1.5 !important;
+    }
+
+    /* 2) Ocultar todo lo interactivo */
     .gear,.panel,.nav,.ghost,.actions,.tabs{ display:none !important; }
-    .wrap{ padding:0; max-width:none; }
+
+    /* 3) Contenedor limpio */
+    .wrap{
+      max-width:none !important;
+      width:100% !important;
+      padding:0 !important;
+      margin:0 !important;
+    }
+
+    /* 4) Todas las pestañas visibles y en orden */
     .tabpane[hidden]{ display:block !important; }
+    .tabpane{ animation:none !important; }
+
+    /* 5) Saltos de página limpios entre secciones */
+    .tabpane + .tabpane{
+      break-before: page;
+      page-break-before: always;
+      margin-top:0 !important;
+      padding-top:0 !important;
+    }
+
+    /* 6) Título de cada pestaña como encabezado de sección */
     .tabpane::before{
-      content:attr(data-print-title);
+      content: attr(data-print-title);
       display:block;
       font-size:13px;
       font-weight:800;
       letter-spacing:.14em;
       text-transform:uppercase;
       color:#000;
-      margin:26px 0 10px;
-      padding-top:14px;
-      border-top:2px solid #000;
+      padding:0 0 6px 0;
+      margin:0 0 14px 0;
+      border-bottom:2px solid #000;
     }
-    .lvl,.group,.rev-item{ break-inside:avoid; }
+
+    /* 7) Cabecera de resultados: se queda arriba de todo */
+    .res-head{ display:block !important; }
+    .bignum{
+      font-size:44px !important;
+      color:#000 !important;
+      text-shadow:none !important;
+    }
+    .bigsub{ font-size:12px !important; color:#333 !important; }
+
+    /* 8) Pista del corredor: simplificada pero legible */
+    .track{ padding:0 !important; margin-top:12px !important; }
+    .track-inner{ height:28px !important; }
+    .track-inner::before{ display:none !important; }
+    .track-base{ height:2px !important; bottom:6px !important; background:#ccc !important; }
+    .track-fill{ height:2px !important; bottom:6px !important; background:#000 !important; }
+    .runner{
+      bottom:7px !important;
+      transform:translateX(-50%) !important;
+      filter:none !important;
+      transition:none !important;
+    }
+    .runner-body{ font-size:18px !important; }
+    .runner-extra{ font-size:13px !important; }
+    .scale{
+      font-size:9px !important;
+      color:#333 !important;
+      margin-top:2px !important;
+    }
+    .scale span{ color:#000 !important; }
+
+    /* 9) Bloques por nivel */
+    .lvl{
+      margin-top:18px !important;
+      padding-top:14px !important;
+      border-top:1px solid #ccc !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .lvl::before{ display:none !important; }
+
+    .lvlhead h2{ font-size:13px !important; }
+    .lvlpct{ font-size:16px !important; color:#000 !important; }
+    .verdict{ font-size:11px !important; margin:8px 0 10px !important; color:#333 !important; }
+
+    /* 10) Categorías dentro de cada nivel */
+    .cat{
+      grid-template-columns:1fr 100px 50px !important;
+      gap:10px !important;
+      padding:5px 0 !important;
+      border-bottom:1px solid #e2e2e2 !important;
+      font-size:11px !important;
+      break-inside: avoid;
+    }
+    .catname{ font-size:11px !important; }
+    .catpct{ font-size:10px !important; }
+    .minibar{ height:4px !important; background:#e2e2e2 !important; }
+    .minibar i{ background:#000 !important; }
+    .minibar i.m-alto{ background:#1F6B3E !important; }
+    .minibar i.m-mid{ background:#8A6A16 !important; }
+    .minibar i.m-bajo{ background:#9C3B25 !important; }
+
+    /* 11) Mapa de progreso */
+    .plan h2{ font-size:13px !important; margin-top:14px !important; }
+    .plan .sub{ font-size:11px !important; margin:0 0 12px !important; }
+
+    .group{ margin-bottom:14px !important; break-inside: avoid; }
+    .group h3{
+      font-size:10px !important;
+      margin-bottom:6px !important;
+      padding-left:8px !important;
+    }
+    .item{
+      padding:5px 0 !important;
+      font-size:11px !important;
+      border-bottom:1px solid #e2e2e2 !important;
+      break-inside: avoid;
+    }
+    .item .tag{ font-size:10px !important; color:#333 !important; }
+    .empty{ font-size:10px !important; }
+
+    /* 12) Revisión */
+    .rev-head{
+      display:block !important;
+      margin:12px 0 14px !important;
+    }
+    .rev-stats{
+      display:flex !important;
+      gap:16px !important;
+      font-size:11px !important;
+      margin-bottom:10px !important;
+      color:#333 !important;
+    }
+    .rev-stats b{ color:#000 !important; }
+
+    .filters{ display:none !important; }
+
+    /* Aseguramos que TODAS las preguntas salgan, sin importar filtros */
+    .rev-item[hidden]{ display:block !important; }
+
+    .rev{ gap:8px !important; }
+    .rev-item{
+      break-inside: avoid;
+      page-break-inside: avoid;
+      padding:10px 12px !important;
+      border:1px solid #ccc !important;
+      border-left-width:4px !important;
+      background:#fff !important;
+    }
+    .rev-item.ok{ border-left-color:#1F6B3E !important; }
+    .rev-item.no{ border-left-color:#9C3B25 !important; }
+    .rev-item.bl{ border-left-color:#666 !important; }
+
+    .rev-top{ margin-bottom:6px !important; font-size:9px !important; }
+    .rev-num{
+      min-width:20px !important;
+      height:20px !important;
+      font-size:10px !important;
+      background:#fff !important;
+      color:#000 !important;
+      border-color:#ccc !important;
+    }
+    .rev-nivel{ color:#333 !important; }
+    .rev-cat{ font-size:10px !important; color:#555 !important; }
+
+    .rev-q{ font-size:12px !important; margin:0 0 8px !important; }
+
+    .rev-opts{ gap:4px !important; }
+    .rev-opt{
+      padding:5px 8px !important;
+      font-size:11px !important;
+      border:1px solid #ddd !important;
+      background:#fff !important;
+      break-inside: avoid;
+    }
+    .rev-opt .rk{ font-size:9px !important; width:14px !important; }
+
+    .rev-opt.correct{
+      background:#EDF6F0 !important;
+      border-color:#1F6B3E !important;
+    }
+    .rev-opt.correct .rk{ color:#1F6B3E !important; }
+    .rev-opt.correct .badge{
+      background:#1F6B3E !important;
+      color:#fff !important;
+    }
+
+    .rev-opt.wrong{
+      background:#FBEEE9 !important;
+      border-color:#9C3B25 !important;
+    }
+    .rev-opt.wrong .rk{ color:#9C3B25 !important; }
+    .rev-opt.wrong .badge{
+      background:#9C3B25 !important;
+      color:#fff !important;
+    }
+
+    .rev-opt .badge.mixta{
+      background:#000 !important;
+      color:#fff !important;
+    }
+
+    .rev-note{ font-size:10px !important; color:#666 !important; margin-top:5px !important; }
+
+    /* 13) Evitar que un título quede huérfano al final de página */
+    h1, h2, h3{ break-after: avoid; page-break-after: avoid; }
+
+    /* 14) Cualquier enlace, sin subrayado azul */
+    a{ color:#000 !important; text-decoration:none !important; }
+  }
+
+  /* ============================================================
+     IMPRESIÓN EN PANTALLA (vista previa opcional)
+     ============================================================ */
+
+  body.print-preview .tabpane[hidden]{ display:block; }
+  body.print-preview .gear,
+  body.print-preview .panel,
+  body.print-preview .nav,
+  body.print-preview .ghost,
+  body.print-preview .actions,
+  body.print-preview .tabs{ display:none; }
+  body.print-preview .tabpane + .tabpane{
+    border-top:2px solid var(--line);
+    margin-top:40px;
+    padding-top:30px;
+  }
+  body.print-preview .tabpane::before{
+    content: attr(data-print-title);
+    display:block;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-weight:800;
+    margin-bottom:16px;
   }
 </style>
 </head>
@@ -1123,263 +1351,108 @@
 <script>
 /* ============================================================
    BANCO DE PREGUNTAS
-   El índice `ok` original no importa mucho, porque las opciones
-   se mezclan al azar al iniciar cada test.
+   Las opciones se mezclan al azar al iniciar cada test.
    ============================================================ */
 
 const DATA = [
-  /* ===================== NIVEL 1 — FUNDAMENTOS ===================== */
   {
     nombre: "Nivel 1",
     sub: "Fundamentos",
     preguntas: [
-      { cat:"Aritmética y signos",
-        q:"¿Cuál es el resultado de  8 + 2 × (5 − 3)² ?",
-        ops:["16","20","40","9"], ok:0 },
-      { cat:"Aritmética y signos",
-        q:"¿Cuál es el resultado de  (−3) − (−7) + (−2) ?",
-        ops:["2","−12","−8","12"], ok:0 },
-      { cat:"Fracciones y racionales",
-        q:"¿Cuánto es  2/3 + 1/4 ?",
-        ops:["11/12","3/7","3/12","11/7"], ok:0 },
-      { cat:"Porcentajes y proporcionalidad",
-        q:"Un artículo cuesta $80 y tiene un 25% de descuento. ¿Cuánto se paga al final?",
-        ops:["$60","$20","$55","$75"], ok:0 },
-      { cat:"Potencias y raíces",
-        q:"¿Cuánto es  2³ × 2² ?",
-        ops:["32","64","16","10"], ok:0 },
-      { cat:"Potencias y raíces",
-        q:"¿Cuánto es  √144 ?",
-        ops:["12","14","72","24"], ok:0 },
-      { cat:"Álgebra básica",
-        q:"«El doble de un número, aumentado en 5» se escribe como:",
-        ops:["2x + 5","2(x + 5)","2x − 5","x² + 5"], ok:0 },
-      { cat:"Álgebra básica",
-        q:"Resuelve:  3x − 7 = 11",
-        ops:["x = 6","x = 4/3","x = 18","x = 4"], ok:0 },
-      { cat:"Porcentajes y proporcionalidad",
-        q:"Si 3 lápices cuestan $12, ¿cuánto cuestan 5 lápices del mismo tipo?",
-        ops:["$20","$15","$24","$60"], ok:0 },
-      { cat:"Geometría",
-        q:"Un rectángulo mide 8 cm de largo y 5 cm de ancho. ¿Cuál es su perímetro?",
-        ops:["26 cm","40 cm","13 cm","21 cm"], ok:0 },
-      { cat:"Geometría",
-        q:"Un triángulo tiene base 10 cm y altura 6 cm. ¿Cuál es su área?",
-        ops:["30 cm²","60 cm²","16 cm²","15 cm²"], ok:0 },
-      { cat:"Fracciones y racionales",
-        q:"¿Cuál de estos números es mayor?",
-        ops:["−0.4","−1/2","Son iguales","No se pueden comparar"], ok:0 },
-      { cat:"Aritmética y signos",
-        q:"¿Cuánto es  0.25 × 0.4 ?",
-        ops:["0.1","0.01","1","0.65"], ok:0 },
-      { cat:"Aritmética y signos",
-        q:"¿Cuál es el mínimo común múltiplo de 6 y 8?",
-        ops:["24","48","2","14"], ok:0 },
-      { cat:"Álgebra básica",
-        q:"Si a = 3 y b = −2, ¿cuánto vale  a² − b ?",
-        ops:["11","7","5","1"], ok:0 },
-      { cat:"Datos y modelación",
-        q:"¿Cuál es el promedio de 4, 7, 9 y 12?",
-        ops:["8","32","10.5","7"], ok:0 },
-      { cat:"Geometría",
-        q:"En un triángulo, dos de sus ángulos miden 65° y 45°. ¿Cuánto mide el tercero?",
-        ops:["70°","110°","60°","250°"], ok:0 },
-      { cat:"Potencias y raíces",
-        q:"¿Cuál es el valor de  3.5 × 10³ ?",
-        ops:["3500","350","35 000","3050"], ok:0 },
-      { cat:"Datos y modelación",
-        q:"Una bicicleta cuesta $5 la primera hora, $10 por dos horas, $15 por tres horas y $20 por cuatro horas. ¿Qué relación describe el costo?",
-        ops:["costo = 5 × horas","costo = horas + 4","costo = 5 + horas","costo = horas² + 4"], ok:0 },
-      { cat:"Porcentajes y proporcionalidad",
-        q:"En un mapa la escala es 1 : 100 000. Si dos pueblos están a 4 cm en el mapa, ¿qué distancia los separa en la realidad?",
-        ops:["4 km","40 km","400 km","0.4 km"], ok:0 }
+      { cat:"Aritmética y signos", q:"¿Cuál es el resultado de  8 + 2 × (5 − 3)² ?", ops:["16","20","40","9"], ok:0 },
+      { cat:"Aritmética y signos", q:"¿Cuál es el resultado de  (−3) − (−7) + (−2) ?", ops:["2","−12","−8","12"], ok:0 },
+      { cat:"Fracciones y racionales", q:"¿Cuánto es  2/3 + 1/4 ?", ops:["11/12","3/7","3/12","11/7"], ok:0 },
+      { cat:"Porcentajes y proporcionalidad", q:"Un artículo cuesta $80 y tiene un 25% de descuento. ¿Cuánto se paga al final?", ops:["$60","$20","$55","$75"], ok:0 },
+      { cat:"Potencias y raíces", q:"¿Cuánto es  2³ × 2² ?", ops:["32","64","16","10"], ok:0 },
+      { cat:"Potencias y raíces", q:"¿Cuánto es  √144 ?", ops:["12","14","72","24"], ok:0 },
+      { cat:"Álgebra básica", q:"«El doble de un número, aumentado en 5» se escribe como:", ops:["2x + 5","2(x + 5)","2x − 5","x² + 5"], ok:0 },
+      { cat:"Álgebra básica", q:"Resuelve:  3x − 7 = 11", ops:["x = 6","x = 4/3","x = 18","x = 4"], ok:0 },
+      { cat:"Porcentajes y proporcionalidad", q:"Si 3 lápices cuestan $12, ¿cuánto cuestan 5 lápices del mismo tipo?", ops:["$20","$15","$24","$60"], ok:0 },
+      { cat:"Geometría", q:"Un rectángulo mide 8 cm de largo y 5 cm de ancho. ¿Cuál es su perímetro?", ops:["26 cm","40 cm","13 cm","21 cm"], ok:0 },
+      { cat:"Geometría", q:"Un triángulo tiene base 10 cm y altura 6 cm. ¿Cuál es su área?", ops:["30 cm²","60 cm²","16 cm²","15 cm²"], ok:0 },
+      { cat:"Fracciones y racionales", q:"¿Cuál de estos números es mayor?", ops:["−0.4","−1/2","Son iguales","No se pueden comparar"], ok:0 },
+      { cat:"Aritmética y signos", q:"¿Cuánto es  0.25 × 0.4 ?", ops:["0.1","0.01","1","0.65"], ok:0 },
+      { cat:"Aritmética y signos", q:"¿Cuál es el mínimo común múltiplo de 6 y 8?", ops:["24","48","2","14"], ok:0 },
+      { cat:"Álgebra básica", q:"Si a = 3 y b = −2, ¿cuánto vale  a² − b ?", ops:["11","7","5","1"], ok:0 },
+      { cat:"Datos y modelación", q:"¿Cuál es el promedio de 4, 7, 9 y 12?", ops:["8","32","10.5","7"], ok:0 },
+      { cat:"Geometría", q:"En un triángulo, dos de sus ángulos miden 65° y 45°. ¿Cuánto mide el tercero?", ops:["70°","110°","60°","250°"], ok:0 },
+      { cat:"Potencias y raíces", q:"¿Cuál es el valor de  3.5 × 10³ ?", ops:["3500","350","35 000","3050"], ok:0 },
+      { cat:"Datos y modelación", q:"Una bicicleta cuesta $5 la primera hora, $10 por dos horas, $15 por tres horas y $20 por cuatro horas. ¿Qué relación describe el costo?", ops:["costo = 5 × horas","costo = horas + 4","costo = 5 + horas","costo = horas² + 4"], ok:0 },
+      { cat:"Porcentajes y proporcionalidad", q:"En un mapa la escala es 1 : 100 000. Si dos pueblos están a 4 cm en el mapa, ¿qué distancia los separa en la realidad?", ops:["4 km","40 km","400 km","0.4 km"], ok:0 }
     ]
   },
-
-  /* ===================== NIVEL 2 — INTERMEDIO ===================== */
   {
     nombre: "Nivel 2",
     sub: "Intermedio",
     preguntas: [
-      { cat:"Ecuaciones y sistemas",
-        q:"Resuelve:  2(x − 3) = 4x + 8",
-        ops:["x = −7","x = 1","x = −1","x = 7"], ok:0 },
-      { cat:"Ecuaciones y sistemas",
-        q:"Si  x + y = 10  y  x − y = 4, ¿cuánto vale  x · y ?",
-        ops:["21","24","7","25"], ok:0 },
-      { cat:"Polinomios y factorización",
-        q:"Si x ≠ 2, ¿a qué es igual  (x² − 4) / (x − 2) ?",
-        ops:["x + 2","x − 2","x² − 2","2x"], ok:0 },
-      { cat:"Polinomios y factorización",
-        q:"¿Cuál es el desarrollo de  (x + 5)² ?",
-        ops:["x² + 10x + 25","x² + 25","x² + 5x + 25","x² + 10x + 10"], ok:0 },
-      { cat:"Polinomios y factorización",
-        q:"¿Cuál es la factorización de  x² − 9 ?",
-        ops:["(x − 3)(x + 3)","(x − 3)²","(x − 9)(x + 1)","(x + 3)²"], ok:0 },
-      { cat:"Proporcionalidad y porcentajes",
-        q:"Después de aplicarle un 20% de descuento, un producto quedó en $64. ¿Cuál era su precio original?",
-        ops:["$80","$76.80","$84","$128"], ok:0 },
-      { cat:"Proporcionalidad y porcentajes",
-        q:"Se depositan $1000 al 5% de interés simple anual. ¿Cuánto interés se gana en 3 años?",
-        ops:["$150","$50","$1150","$300"], ok:0 },
-      { cat:"Proporcionalidad y porcentajes",
-        q:"Si 6 obreros tardan 12 días en hacer una obra, ¿cuánto tardarán 9 obreros trabajando al mismo ritmo?",
-        ops:["8 días","18 días","6 días","9 días"], ok:0 },
-      { cat:"Ecuaciones y sistemas",
-        q:"Resuelve:   x/3 + x/4 = 7",
-        ops:["x = 12","x = 7","x = 24","x = 3"], ok:0 },
-      { cat:"Funciones y gráficas",
-        q:"¿Cuál es la pendiente de la recta que pasa por los puntos (1, 2) y (4, 11)?",
-        ops:["3","1/3","9","−3"], ok:0 },
-      { cat:"Ecuaciones y sistemas",
-        q:"Si  −2x > 6 , entonces:",
-        ops:["x < −3","x > −3","x < 3","x > 3"], ok:0 },
-      { cat:"Potencias y raíces",
-        q:"¿Cuál es la forma simplificada de  √50 ?",
-        ops:["5√2","25√2","2√5","10√5"], ok:0 },
-      { cat:"Potencias y raíces",
-        q:"¿Cuánto es  2⁻³ ?",
-        ops:["1/8","−8","−6","8"], ok:0 },
-      { cat:"Geometría",
-        q:"Un triángulo rectángulo tiene catetos de 6 cm y 8 cm. ¿Cuánto mide la hipotenusa?",
-        ops:["10 cm","14 cm","48 cm","100 cm"], ok:0 },
-      { cat:"Geometría",
-        q:"¿Cuál es el área de un círculo de radio 5 cm?",
-        ops:["25π cm²","10π cm²","5π cm²","50π cm²"], ok:0 },
-      { cat:"Geometría",
-        q:"Dos triángulos son semejantes. Los lados del menor miden 3, 4 y 5 cm. Si el lado del mayor que corresponde al de 3 cm mide 9 cm, ¿cuál es el perímetro del mayor?",
-        ops:["36 cm","27 cm","45 cm","18 cm"], ok:0 },
-      { cat:"Geometría",
-        q:"¿Cuál es el volumen de un cubo de 4 cm de arista?",
-        ops:["64 cm³","16 cm³","48 cm³","96 cm³"], ok:0 },
-      { cat:"Estadística y probabilidad",
-        q:"¿Cuál es la mediana del conjunto  3, 7, 8, 5, 12, 9 ?",
-        ops:["7.5","8","7","9"], ok:0 },
-      { cat:"Estadística y probabilidad",
-        q:"Se lanza un dado de seis caras. ¿Cuál es la probabilidad de obtener un número primo?",
-        ops:["1/2","1/3","2/3","1/6"], ok:0 },
-      { cat:"Funciones y gráficas",
-        q:"Si  f(x) = 2x² − 3x , ¿cuánto vale  f(−2) ?",
-        ops:["14","2","−2","−14"], ok:0 }
+      { cat:"Ecuaciones y sistemas", q:"Resuelve:  2(x − 3) = 4x + 8", ops:["x = −7","x = 1","x = −1","x = 7"], ok:0 },
+      { cat:"Ecuaciones y sistemas", q:"Si  x + y = 10  y  x − y = 4, ¿cuánto vale  x · y ?", ops:["21","24","7","25"], ok:0 },
+      { cat:"Polinomios y factorización", q:"Si x ≠ 2, ¿a qué es igual  (x² − 4) / (x − 2) ?", ops:["x + 2","x − 2","x² − 2","2x"], ok:0 },
+      { cat:"Polinomios y factorización", q:"¿Cuál es el desarrollo de  (x + 5)² ?", ops:["x² + 10x + 25","x² + 25","x² + 5x + 25","x² + 10x + 10"], ok:0 },
+      { cat:"Polinomios y factorización", q:"¿Cuál es la factorización de  x² − 9 ?", ops:["(x − 3)(x + 3)","(x − 3)²","(x − 9)(x + 1)","(x + 3)²"], ok:0 },
+      { cat:"Proporcionalidad y porcentajes", q:"Después de aplicarle un 20% de descuento, un producto quedó en $64. ¿Cuál era su precio original?", ops:["$80","$76.80","$84","$128"], ok:0 },
+      { cat:"Proporcionalidad y porcentajes", q:"Se depositan $1000 al 5% de interés simple anual. ¿Cuánto interés se gana en 3 años?", ops:["$150","$50","$1150","$300"], ok:0 },
+      { cat:"Proporcionalidad y porcentajes", q:"Si 6 obreros tardan 12 días en hacer una obra, ¿cuánto tardarán 9 obreros trabajando al mismo ritmo?", ops:["8 días","18 días","6 días","9 días"], ok:0 },
+      { cat:"Ecuaciones y sistemas", q:"Resuelve:   x/3 + x/4 = 7", ops:["x = 12","x = 7","x = 24","x = 3"], ok:0 },
+      { cat:"Funciones y gráficas", q:"¿Cuál es la pendiente de la recta que pasa por los puntos (1, 2) y (4, 11)?", ops:["3","1/3","9","−3"], ok:0 },
+      { cat:"Ecuaciones y sistemas", q:"Si  −2x > 6 , entonces:", ops:["x < −3","x > −3","x < 3","x > 3"], ok:0 },
+      { cat:"Potencias y raíces", q:"¿Cuál es la forma simplificada de  √50 ?", ops:["5√2","25√2","2√5","10√5"], ok:0 },
+      { cat:"Potencias y raíces", q:"¿Cuánto es  2⁻³ ?", ops:["1/8","−8","−6","8"], ok:0 },
+      { cat:"Geometría", q:"Un triángulo rectángulo tiene catetos de 6 cm y 8 cm. ¿Cuánto mide la hipotenusa?", ops:["10 cm","14 cm","48 cm","100 cm"], ok:0 },
+      { cat:"Geometría", q:"¿Cuál es el área de un círculo de radio 5 cm?", ops:["25π cm²","10π cm²","5π cm²","50π cm²"], ok:0 },
+      { cat:"Geometría", q:"Dos triángulos son semejantes. Los lados del menor miden 3, 4 y 5 cm. Si el lado del mayor que corresponde al de 3 cm mide 9 cm, ¿cuál es el perímetro del mayor?", ops:["36 cm","27 cm","45 cm","18 cm"], ok:0 },
+      { cat:"Geometría", q:"¿Cuál es el volumen de un cubo de 4 cm de arista?", ops:["64 cm³","16 cm³","48 cm³","96 cm³"], ok:0 },
+      { cat:"Estadística y probabilidad", q:"¿Cuál es la mediana del conjunto  3, 7, 8, 5, 12, 9 ?", ops:["7.5","8","7","9"], ok:0 },
+      { cat:"Estadística y probabilidad", q:"Se lanza un dado de seis caras. ¿Cuál es la probabilidad de obtener un número primo?", ops:["1/2","1/3","2/3","1/6"], ok:0 },
+      { cat:"Funciones y gráficas", q:"Si  f(x) = 2x² − 3x , ¿cuánto vale  f(−2) ?", ops:["14","2","−2","−14"], ok:0 }
     ]
   },
-
-  /* ===================== NIVEL 3 — AVANZADO ===================== */
   {
     nombre: "Nivel 3",
     sub: "Avanzado",
     preguntas: [
-      { cat:"Cuadráticas e inecuaciones",
-        q:"¿Cuáles son las soluciones de  x² − 5x + 6 = 0 ?",
-        ops:["x = 2 y x = 3","x = −2 y x = −3","x = 1 y x = 6","x = −1 y x = −6"], ok:0 },
-      { cat:"Cuadráticas e inecuaciones",
-        q:"¿Cuál es el vértice de la parábola  y = x² − 4x + 1 ?",
-        ops:["(2, −3)","(−2, −3)","(2, 3)","(4, 1)"], ok:0 },
-      { cat:"Logaritmos y exponenciales",
-        q:"¿Cuánto vale  log₂ 32 ?",
-        ops:["5","4","16","6"], ok:0 },
-      { cat:"Radicales y valor absoluto",
-        q:"Resuelve:   √(x + 5) = x − 1",
-        ops:["x = 4","x = −1","x = 4 y x = −1","No tiene solución"], ok:0 },
-      { cat:"Sucesiones",
-        q:"¿Cuál es el siguiente término de la sucesión  2, 6, 12, 20, 30, ... ?",
-        ops:["42","40","36","44"], ok:0 },
-      { cat:"Sucesiones",
-        q:"En la progresión aritmética  3, 7, 11, 15, ...  ¿cuál es el término número 20?",
-        ops:["79","83","80","76"], ok:0 },
-      { cat:"Sucesiones",
-        q:"¿Cuál es el resultado de la suma  1 + 2 + 4 + 8 + ... + 512 ?",
-        ops:["1023","1024","511","2047"], ok:0 },
-      { cat:"Trigonometría",
-        q:"En un triángulo rectángulo, el cateto opuesto a θ mide 3 y la hipotenusa mide 5. ¿Cuánto vale sen θ?",
-        ops:["3/5","4/5","3/4","5/3"], ok:0 },
-      { cat:"Trigonometría",
-        q:"Si  sen θ = 3/5  y θ está en el primer cuadrante, ¿cuánto vale  cos θ ?",
-        ops:["4/5","−4/5","5/3","16/25"], ok:0 },
-      { cat:"Funciones",
-        q:"¿Cuál es el dominio de  f(x) = √(x − 2) ?",
-        ops:["x ≥ 2","x > 2","x ≤ 2","Todos los números reales"], ok:0 },
-      { cat:"Cuadráticas e inecuaciones",
-        q:"¿Para qué valores de x se cumple  x² − x − 6 > 0 ?",
-        ops:["x < −2  o  x > 3","−2 < x < 3","x > 3","x < −2"], ok:0 },
-      { cat:"Radicales y valor absoluto",
-        q:"Resuelve:   |2x − 6| = 10",
-        ops:["x = 8  o  x = −2","x = 8","x = −2","x = 2  o  x = −8"], ok:0 },
-      { cat:"Funciones",
-        q:"Si  f(x) = 2x + 1  y  g(x) = x², ¿cuánto vale  f(g(3)) ?",
-        ops:["19","49","37","13"], ok:0 },
-      { cat:"Funciones",
-        q:"¿Cuál es la función inversa de  f(x) = 3x − 6 ?",
-        ops:["(x + 6)/3","(x − 6)/3","3x + 6","1/(3x − 6)"], ok:0 },
-      { cat:"Geometría analítica",
-        q:"¿Cuál es la distancia entre los puntos (1, 2) y (4, 6)?",
-        ops:["5","7","√7","25"], ok:0 },
-      { cat:"Geometría analítica",
-        q:"Con 40 metros de cerca se quiere cercar un terreno rectangular de área máxima. ¿Cuál es esa área máxima?",
-        ops:["100 m²","400 m²","200 m²","80 m²"], ok:0 },
-      { cat:"Probabilidad y conteo",
-        q:"¿Cuántos números de 3 cifras distintas se pueden formar con los dígitos 1, 2, 3, 4 y 5?",
-        ops:["60","125","10","20"], ok:0 },
-      { cat:"Probabilidad y conteo",
-        q:"Se lanzan dos dados de seis caras. ¿Cuál es la probabilidad de que la suma de sus caras sea 7?",
-        ops:["1/6","1/12","7/36","1/36"], ok:0 },
-      { cat:"Logaritmos y exponenciales",
-        q:"Resuelve:   2^(x + 1) = 32",
-        ops:["x = 4","x = 5","x = 16","x = 6"], ok:0 },
-      { cat:"Logaritmos y exponenciales",
-        q:"Una población de bacterias se duplica cada 3 horas. Si ahora hay 500, ¿cuántas habrá dentro de 9 horas?",
-        ops:["4000","1500","4500","8000"], ok:0 },
-      { cat:"Logaritmos y exponenciales",
-        q:"Resuelve:   log(x) + log(2) = 1",
-        ops:["x = 5","x = 8","x = 10","x = 0.5"], ok:0 }
+      { cat:"Cuadráticas e inecuaciones", q:"¿Cuáles son las soluciones de  x² − 5x + 6 = 0 ?", ops:["x = 2 y x = 3","x = −2 y x = −3","x = 1 y x = 6","x = −1 y x = −6"], ok:0 },
+      { cat:"Cuadráticas e inecuaciones", q:"¿Cuál es el vértice de la parábola  y = x² − 4x + 1 ?", ops:["(2, −3)","(−2, −3)","(2, 3)","(4, 1)"], ok:0 },
+      { cat:"Logaritmos y exponenciales", q:"¿Cuánto vale  log₂ 32 ?", ops:["5","4","16","6"], ok:0 },
+      { cat:"Radicales y valor absoluto", q:"Resuelve:   √(x + 5) = x − 1", ops:["x = 4","x = −1","x = 4 y x = −1","No tiene solución"], ok:0 },
+      { cat:"Sucesiones", q:"¿Cuál es el siguiente término de la sucesión  2, 6, 12, 20, 30, ... ?", ops:["42","40","36","44"], ok:0 },
+      { cat:"Sucesiones", q:"En la progresión aritmética  3, 7, 11, 15, ...  ¿cuál es el término número 20?", ops:["79","83","80","76"], ok:0 },
+      { cat:"Sucesiones", q:"¿Cuál es el resultado de la suma  1 + 2 + 4 + 8 + ... + 512 ?", ops:["1023","1024","511","2047"], ok:0 },
+      { cat:"Trigonometría", q:"En un triángulo rectángulo, el cateto opuesto a θ mide 3 y la hipotenusa mide 5. ¿Cuánto vale sen θ?", ops:["3/5","4/5","3/4","5/3"], ok:0 },
+      { cat:"Trigonometría", q:"Si  sen θ = 3/5  y θ está en el primer cuadrante, ¿cuánto vale  cos θ ?", ops:["4/5","−4/5","5/3","16/25"], ok:0 },
+      { cat:"Funciones", q:"¿Cuál es el dominio de  f(x) = √(x − 2) ?", ops:["x ≥ 2","x > 2","x ≤ 2","Todos los números reales"], ok:0 },
+      { cat:"Cuadráticas e inecuaciones", q:"¿Para qué valores de x se cumple  x² − x − 6 > 0 ?", ops:["x < −2  o  x > 3","−2 < x < 3","x > 3","x < −2"], ok:0 },
+      { cat:"Radicales y valor absoluto", q:"Resuelve:   |2x − 6| = 10", ops:["x = 8  o  x = −2","x = 8","x = −2","x = 2  o  x = −8"], ok:0 },
+      { cat:"Funciones", q:"Si  f(x) = 2x + 1  y  g(x) = x², ¿cuánto vale  f(g(3)) ?", ops:["19","49","37","13"], ok:0 },
+      { cat:"Funciones", q:"¿Cuál es la función inversa de  f(x) = 3x − 6 ?", ops:["(x + 6)/3","(x − 6)/3","3x + 6","1/(3x − 6)"], ok:0 },
+      { cat:"Geometría analítica", q:"¿Cuál es la distancia entre los puntos (1, 2) y (4, 6)?", ops:["5","7","√7","25"], ok:0 },
+      { cat:"Geometría analítica", q:"Con 40 metros de cerca se quiere cercar un terreno rectangular de área máxima. ¿Cuál es esa área máxima?", ops:["100 m²","400 m²","200 m²","80 m²"], ok:0 },
+      { cat:"Probabilidad y conteo", q:"¿Cuántos números de 3 cifras distintas se pueden formar con los dígitos 1, 2, 3, 4 y 5?", ops:["60","125","10","20"], ok:0 },
+      { cat:"Probabilidad y conteo", q:"Se lanzan dos dados de seis caras. ¿Cuál es la probabilidad de que la suma de sus caras sea 7?", ops:["1/6","1/12","7/36","1/36"], ok:0 },
+      { cat:"Logaritmos y exponenciales", q:"Resuelve:   2^(x + 1) = 32", ops:["x = 4","x = 5","x = 16","x = 6"], ok:0 },
+      { cat:"Logaritmos y exponenciales", q:"Una población de bacterias se duplica cada 3 horas. Si ahora hay 500, ¿cuántas habrá dentro de 9 horas?", ops:["4000","1500","4500","8000"], ok:0 },
+      { cat:"Logaritmos y exponenciales", q:"Resuelve:   log(x) + log(2) = 1", ops:["x = 5","x = 8","x = 10","x = 0.5"], ok:0 }
     ]
   }
 ];
 
 /* ============================================================
    TEMAS VISUALES
-   Cada tema trae:
-     emojis  → los cuatro iconos de la matriz de respuestas
-     runner  → { main, flip, extra } para el corredor temático
    ============================================================ */
 
 const THEMES = [
-  {
-    id:'futbol',
-    nombre:'Arquero',
-    sub:'cancha y guantes',
-    colores:['#F0F7EF','#1E8A4C','#C99A16'],
-    emojis:['⚽','🥅','🧤','👟'],
-    esTexto:false,
-    runner:{ main:'🏃‍♂️', flip:true, extra:'⚽' }
-  },
-  {
-    id:'clasico',
-    nombre:'Clásico',
-    sub:'papel y tinta',
-    colores:['#FBFAF7','#16150F','#C2622E'],
-    emojis:['A','B','C','D'],
-    esTexto:true,
-    runner:{ main:'🏃', flip:true, extra:null }
-  },
-  {
-    id:'kawaii',
-    nombre:'Kawaii',
-    sub:'pastel y suave',
-    colores:['#FFF5F9','#F06A9B','#5BB98C'],
-    emojis:['💖','🌸','⭐','🎀'],
-    esTexto:false,
-    runner:{ main:'🐻', flip:false, extra:'💖' }
-  },
-  {
-    id:'arcade',
-    nombre:'Arcade',
-    sub:'modo nocturno',
-    colores:['#12121B','#8B7CFF','#3DDC97'],
-    emojis:['🎮','👾','🕹️','🚀'],
-    esTexto:false,
-    runner:{ main:'👾', flip:false, extra:null }
-  }
+  { id:'futbol', nombre:'Arquero', sub:'cancha y guantes', colores:['#F0F7EF','#1E8A4C','#C99A16'],
+    emojis:['⚽','🥅','🧤','👟'], esTexto:false,
+    runner:{ main:'🏃‍♂️', flip:true, extra:'⚽' } },
+  { id:'clasico', nombre:'Clásico', sub:'papel y tinta', colores:['#FBFAF7','#16150F','#C2622E'],
+    emojis:['A','B','C','D'], esTexto:true,
+    runner:{ main:'🏃', flip:true, extra:null } },
+  { id:'kawaii', nombre:'Kawaii', sub:'pastel y suave', colores:['#FFF5F9','#F06A9B','#5BB98C'],
+    emojis:['💖','🌸','⭐','🎀'], esTexto:false,
+    runner:{ main:'🐻', flip:false, extra:'💖' } },
+  { id:'arcade', nombre:'Arcade', sub:'modo nocturno', colores:['#12121B','#8B7CFF','#3DDC97'],
+    emojis:['🎮','👾','🕹️','🚀'], esTexto:false,
+    runner:{ main:'👾', flip:false, extra:null } }
 ];
 
 const TEMA_DEFECTO = 'futbol';
@@ -1492,8 +1565,6 @@ let pantalla = 'inicio';
 
 const esc = s => String(s).replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
 
-/* ---------- Utilidades ---------- */
-
 function shuffleArray(a){
   for(let i = a.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
@@ -1502,7 +1573,6 @@ function shuffleArray(a){
   return a;
 }
 
-/* Construye el corredor temático en HTML */
 function runnerHTML(pct){
   const r = temaActual().runner;
   const body = `<span class="runner-body${r.flip ? ' flip' : ''}">${r.main}</span>`;
@@ -1510,9 +1580,7 @@ function runnerHTML(pct){
   return `<div class="runner" style="left:${pct}%">${body}${extra}</div>`;
 }
 
-/* ============================================================
-   PANTALLA INICIAL
-   ============================================================ */
+/* ---------------- Pantalla inicial ---------------- */
 
 function renderInicio() {
   pantalla = 'inicio';
@@ -1551,9 +1619,7 @@ function renderInicio() {
   });
 }
 
-/* ============================================================
-   INICIAR TEST — aquí se mezclan las opciones
-   ============================================================ */
+/* ---------------- Iniciar ---------------- */
 
 function start(modo) {
   const cola = [];
@@ -1562,14 +1628,10 @@ function start(modo) {
     if (modo !== 'all' && ni !== modo) return;
 
     n.preguntas.forEach((p, pi) => {
-      // Mezclar los índices de las opciones
       const orden = p.ops.map((_, i) => i);
       shuffleArray(orden);
 
-      // Reconstruir las opciones en orden aleatorio
       const ops = orden.map(i => p.ops[i]);
-
-      // Nueva posición de la respuesta correcta tras mezclar
       const ok = orden.indexOf(p.ok);
 
       cola.push({ ni, pi, ops, ok });
@@ -1586,9 +1648,7 @@ function start(modo) {
   renderTest();
 }
 
-/* ============================================================
-   PANTALLA DE PREGUNTA
-   ============================================================ */
+/* ---------------- Pregunta ---------------- */
 
 function renderTest() {
   pantalla = 'test';
@@ -1672,9 +1732,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft'  && S.i > 0)                 { S.i--; renderTest(); }
 });
 
-/* ============================================================
-   CÁLCULO
-   ============================================================ */
+/* ---------------- Cálculo ---------------- */
 
 function calcular() {
   const niveles = DATA.map(n => ({
@@ -1690,7 +1748,7 @@ function calcular() {
     const L = niveles[item.ni];
 
     L.total++;
-    const bien = S.resp[i] === item.ok;   // <- usamos item.ok (posición ya mezclada)
+    const bien = S.resp[i] === item.ok;
     if (bien) L.ok++;
 
     if (!L.cats[p.cat]) L.cats[p.cat] = { total: 0, ok: 0 };
@@ -1714,9 +1772,7 @@ function veredictoNivel(pct) {
   return 'Apenas comenzando. Es normal: aquí es donde más se aprende.';
 }
 
-/* ============================================================
-   ANIMACIÓN DE PISTAS
-   ============================================================ */
+/* ---------------- Animación ---------------- */
 
 function animarTracks(root){
   const items = root.querySelectorAll('[data-pct]');
@@ -1752,7 +1808,6 @@ function renderResultados() {
   const qTotal    = niveles.reduce((a, L) => a + L.total, 0);
   const pctGlobal = Math.round((okTotal / qTotal) * 100);
 
-  /* --- clasificación por tema --- */
   const planas = [];
   niveles.forEach(L => {
     Object.entries(L.cats).forEach(([nombre, c]) => {
@@ -1770,7 +1825,6 @@ function renderResultados() {
   const construyendo = planas.filter(c => c.pct >= 50 && c.pct < 75);
   const comenzando   = planas.filter(c => c.pct < 50);
 
-  /* --- bloques por nivel --- */
   const bloquesNivel = niveles.map(L => {
     const pct  = Math.round((L.ok / L.total) * 100);
     const cls  = clasePct(pct);
@@ -1813,7 +1867,6 @@ function renderResultados() {
       </section>`;
   }).join('');
 
-  /* --- listas --- */
   const lista = (arr, vacio) => {
     if (!arr.length) return `<p class="empty">${vacio}</p>`;
     return arr.map(c => `
@@ -1823,7 +1876,6 @@ function renderResultados() {
       </div>`).join('');
   };
 
-  /* --- recomendación --- */
   const n1 = niveles.find(L => L.nombre === 'Nivel 1');
   const n2 = niveles.find(L => L.nombre === 'Nivel 2');
   const n3 = niveles.find(L => L.nombre === 'Nivel 3');
@@ -1840,7 +1892,6 @@ function renderResultados() {
     recomendacion = 'Vas muy bien en los tres niveles. El siguiente paso son problemas más largos, donde haya que justificar cada decisión.';
   }
 
-  /* --- render --- */
   app.innerHTML = `
     <div class="wrap">
       <p class="eyebrow">Diagnóstico</p>
@@ -1870,12 +1921,10 @@ function renderResultados() {
         <button class="tab" data-tab="revision">Revisión<span class="count" id="cntRev">${qTotal}</span></button>
       </nav>
 
-      <!-- ============ SOLAPA: RESUMEN ============ -->
       <section class="tabpane" data-pane="resumen" data-print-title="Resumen por nivel">
         ${bloquesNivel}
       </section>
 
-      <!-- ============ SOLAPA: MAPA DE PROGRESO ============ -->
       <section class="tabpane" data-pane="mapa" data-print-title="Mapa de progreso" hidden>
         <div class="plan">
           <h2>Tu mapa de progreso</h2>
@@ -1898,7 +1947,6 @@ function renderResultados() {
         </div>
       </section>
 
-      <!-- ============ SOLAPA: REVISIÓN ============ -->
       <section class="tabpane" data-pane="revision" data-print-title="Revisión pregunta a pregunta" hidden>
         ${htmlRevision()}
       </section>
@@ -1916,7 +1964,19 @@ function renderResultados() {
 
   enlazarFiltros();
 
-  app.querySelector('#print').onclick = () => window.print();
+  app.querySelector('#print').onclick = () => {
+    // Antes de imprimir, quitamos filtros ocultos para que salgan todas las preguntas
+    FILTRO_REV = 'todas';
+    const revCont = document.getElementById('rev');
+    if(revCont) revCont.querySelectorAll('.rev-item').forEach(el => { el.hidden = false; });
+    const filtros = document.getElementById('filtros');
+    if(filtros) filtros.querySelectorAll('button').forEach(x => {
+      x.classList.toggle('active', x.dataset.f === 'todas');
+    });
+    const vacio = document.getElementById('revEmpty');
+    if(vacio) vacio.hidden = true;
+    setTimeout(() => window.print(), 60);
+  };
   app.querySelector('#again').onclick = renderInicio;
 
   animarTracks(app);
@@ -1938,7 +1998,7 @@ function activarTab(nombre){
 }
 
 /* ============================================================
-   REVISIÓN CUANTITATIVA
+   REVISIÓN
    ============================================================ */
 
 function estadoPregunta(i){
@@ -2031,8 +2091,6 @@ function htmlRevItem(i, item){
       ${nota}
     </article>`;
 }
-
-/* ---------------- Filtros de la revisión ---------------- */
 
 function enlazarFiltros(){
   const filtros = document.getElementById('filtros');
