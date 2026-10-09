@@ -7,12 +7,121 @@
 <title>Test diagnóstico</title>
 <style>
   /* ============================================================
-     TAMAÑOS DE LETRA
+     ESCALA GLOBAL DE TIPOGRAFÍA
+     Cada variable controla un rol. El atributo data-size del <html>
+     reescribe todas a la vez, así el ajuste se propaga a toda la app
+     (inicio, preguntas, resultados, mapa, revisión).
      ============================================================ */
-  html[data-size="s"]  { --fs-base:15px; --fs-q:21px; --fs-opt:15px; --fs-emo:20px; }
-  html[data-size="m"]  { --fs-base:16px; --fs-q:25px; --fs-opt:16px; --fs-emo:24px; }
-  html[data-size="l"]  { --fs-base:17px; --fs-q:28px; --fs-opt:17px; --fs-emo:27px; }
-  html[data-size="xl"] { --fs-base:19px; --fs-q:32px; --fs-opt:19px; --fs-emo:31px; }
+  :root{
+    --fs-base:16px;       /* texto general */
+    --fs-eyebrow:11px;    /* antetítulos */
+    --fs-h1:32px;         /* título principal */
+    --fs-lead:15px;       /* párrafo de intro */
+    --fs-q:25px;          /* enunciado de pregunta */
+    --fs-opt:16px;        /* opciones de respuesta */
+    --fs-emo:24px;        /* emoji de opción */
+    --fs-btn-t:16px;      /* título de botón de menú */
+    --fs-btn-s:13px;      /* subtítulo de botón */
+    --fs-meta:11px;       /* fila de metadatos */
+    --fs-nav:14px;        /* navegación anterior/siguiente */
+    --fs-ghost:12px;      /* botón fantasma */
+
+    --fs-bignum:76px;     /* porcentaje gigante */
+    --fs-bigsub:14px;     /* debajo del porcentaje */
+    --fs-lvlhead:16px;    /* título de nivel en resultados */
+    --fs-lvlpct:24px;     /* porcentaje de nivel */
+    --fs-verdict:14px;    /* veredicto por nivel */
+    --fs-cat:14px;        /* nombre de categoría */
+    --fs-catpct:12px;     /* contador de categoría */
+    --fs-scale:10px;      /* escala de la pista */
+
+    --fs-tab:13px;        /* pestaña */
+    --fs-tabcount:11px;   /* contador de pestaña */
+
+    --fs-plan-h2:16px;    /* títulos de mapa de progreso */
+    --fs-plan-sub:14px;   /* subtítulo del mapa */
+    --fs-group-h3:11px;   /* encabezados de grupo */
+    --fs-item:14px;       /* filas de temas */
+    --fs-tag:12px;        /* etiqueta de porcentaje */
+    --fs-empty:13px;      /* texto vacío */
+
+    --fs-rev-stats:12px;  /* contadores de revisión */
+    --fs-rev-num:12px;    /* número de pregunta */
+    --fs-rev-top:11px;    /* fila superior de la pregunta */
+    --fs-rev-cat:12px;    /* categoría en revisión */
+    --fs-rev-q:15px;      /* enunciado en revisión */
+    --fs-rev-opt:14px;    /* opciones en revisión */
+    --fs-rev-rk:11px;     /* letra A/B/C/D en revisión */
+    --fs-badge:10px;      /* etiqueta correcta/tu respuesta */
+    --fs-rev-note:12px;   /* nota al pie de la pregunta */
+    --fs-filtro:12px;     /* botones de filtro */
+  }
+
+  /* ---------- Tamaño pequeño ---------- */
+  html[data-size="s"]{
+    --fs-base:14px; --fs-eyebrow:10px; --fs-h1:28px; --fs-lead:13px;
+    --fs-q:21px; --fs-opt:14px; --fs-emo:20px;
+    --fs-btn-t:15px; --fs-btn-s:12px; --fs-meta:10px;
+    --fs-nav:13px; --fs-ghost:11px;
+
+    --fs-bignum:60px; --fs-bigsub:12px;
+    --fs-lvlhead:14px; --fs-lvlpct:20px; --fs-verdict:12px;
+    --fs-cat:12px; --fs-catpct:10px; --fs-scale:9px;
+
+    --fs-tab:12px; --fs-tabcount:10px;
+
+    --fs-plan-h2:14px; --fs-plan-sub:12px;
+    --fs-group-h3:10px; --fs-item:12px; --fs-tag:10px; --fs-empty:11px;
+
+    --fs-rev-stats:11px; --fs-rev-num:11px; --fs-rev-top:10px;
+    --fs-rev-cat:11px; --fs-rev-q:13px; --fs-rev-opt:12px;
+    --fs-rev-rk:10px; --fs-badge:9px; --fs-rev-note:11px; --fs-filtro:11px;
+  }
+
+  /* ---------- Tamaño mediano (por defecto) ---------- */
+  html[data-size="m"]{ /* ya está en :root */ }
+
+  /* ---------- Tamaño grande ---------- */
+  html[data-size="l"]{
+    --fs-base:18px; --fs-eyebrow:12px; --fs-h1:36px; --fs-lead:17px;
+    --fs-q:29px; --fs-opt:18px; --fs-emo:28px;
+    --fs-btn-t:18px; --fs-btn-s:15px; --fs-meta:12px;
+    --fs-nav:15px; --fs-ghost:13px;
+
+    --fs-bignum:88px; --fs-bigsub:16px;
+    --fs-lvlhead:18px; --fs-lvlpct:28px; --fs-verdict:16px;
+    --fs-cat:16px; --fs-catpct:14px; --fs-scale:11px;
+
+    --fs-tab:15px; --fs-tabcount:12px;
+
+    --fs-plan-h2:18px; --fs-plan-sub:16px;
+    --fs-group-h3:12px; --fs-item:16px; --fs-tag:13px; --fs-empty:14px;
+
+    --fs-rev-stats:14px; --fs-rev-num:13px; --fs-rev-top:12px;
+    --fs-rev-cat:13px; --fs-rev-q:17px; --fs-rev-opt:16px;
+    --fs-rev-rk:12px; --fs-badge:11px; --fs-rev-note:13px; --fs-filtro:13px;
+  }
+
+  /* ---------- Tamaño extra grande ---------- */
+  html[data-size="xl"]{
+    --fs-base:20px; --fs-eyebrow:13px; --fs-h1:42px; --fs-lead:19px;
+    --fs-q:34px; --fs-opt:20px; --fs-emo:33px;
+    --fs-btn-t:20px; --fs-btn-s:17px; --fs-meta:13px;
+    --fs-nav:17px; --fs-ghost:14px;
+
+    --fs-bignum:104px; --fs-bigsub:18px;
+    --fs-lvlhead:20px; --fs-lvlpct:33px; --fs-verdict:18px;
+    --fs-cat:18px; --fs-catpct:16px; --fs-scale:12px;
+
+    --fs-tab:17px; --fs-tabcount:13px;
+
+    --fs-plan-h2:20px; --fs-plan-sub:18px;
+    --fs-group-h3:14px; --fs-item:18px; --fs-tag:15px; --fs-empty:16px;
+
+    --fs-rev-stats:16px; --fs-rev-num:14px; --fs-rev-top:13px;
+    --fs-rev-cat:14px; --fs-rev-q:19px; --fs-rev-opt:18px;
+    --fs-rev-rk:13px; --fs-badge:12px; --fs-rev-note:14px; --fs-filtro:15px;
+  }
 
   *,*::before,*::after{ box-sizing:border-box; }
   html{ -webkit-text-size-adjust:100%; }
@@ -157,7 +266,7 @@
   }
 
   .eyebrow{
-    font-size:11px;
+    font-size:var(--fs-eyebrow);
     letter-spacing:.18em;
     text-transform:uppercase;
     color:var(--accent);
@@ -165,14 +274,14 @@
     font-weight:700;
   }
   h1{
-    font-size:32px;
+    font-size:var(--fs-h1);
     font-weight:700;
     letter-spacing:-.025em;
     line-height:1.15;
     margin:0 0 14px;
   }
   .lead{
-    font-size:15px;
+    font-size:var(--fs-lead);
     color:var(--soft);
     margin:0 0 42px;
     max-width:58ch;
@@ -335,11 +444,11 @@
   }
   .btn:hover{ background:var(--sel); padding-left:16px; }
   .btn:hover::before{ transform:scaleY(1); }
-  .btn .t{ font-weight:700; font-size:16px; }
-  .btn .s{ font-size:13px; color:var(--faint); }
+  .btn .t{ font-weight:700; font-size:var(--fs-btn-t); }
+  .btn .s{ font-size:var(--fs-btn-s); color:var(--faint); }
 
   .foot{
-    font-size:12px;
+    font-size:var(--fs-ghost);
     color:var(--faint);
     margin:32px 0 0;
   }
@@ -353,7 +462,7 @@
     justify-content:space-between;
     align-items:baseline;
     gap:16px;
-    font-size:11px;
+    font-size:var(--fs-meta);
     letter-spacing:.16em;
     text-transform:uppercase;
     color:var(--faint);
@@ -491,7 +600,7 @@
     border:0;
     border-bottom:1px solid var(--ink);
     font:inherit;
-    font-size:14px;
+    font-size:var(--fs-nav);
     font-weight:600;
     color:var(--ink);
     padding:8px 0;
@@ -516,7 +625,7 @@
     background:none;
     border:0;
     font:inherit;
-    font-size:12px;
+    font-size:var(--fs-ghost);
     letter-spacing:.06em;
     color:var(--faint);
     cursor:pointer;
@@ -535,7 +644,7 @@
     flex-wrap:wrap;
   }
   .bignum{
-    font-size:76px;
+    font-size:var(--fs-bignum);
     font-weight:800;
     letter-spacing:-.05em;
     line-height:1;
@@ -544,7 +653,7 @@
     text-shadow:0 4px 24px var(--accent-soft);
   }
   .bigsub{
-    font-size:14px;
+    font-size:var(--fs-bigsub);
     color:var(--soft);
     margin-top:12px;
   }
@@ -592,7 +701,7 @@
     user-select:none;
   }
   .runner-body{
-    font-size:26px;
+    font-size:calc(var(--fs-bignum) * 0.34);
     line-height:1;
     display:inline-block;
   }
@@ -600,7 +709,7 @@
     transform:scaleX(-1);
   }
   .runner-extra{
-    font-size:17px;
+    font-size:calc(var(--fs-bignum) * 0.22);
     line-height:1;
     margin-bottom:2px;
   }
@@ -608,7 +717,7 @@
   .scale{
     display:flex;
     justify-content:space-between;
-    font-size:10px;
+    font-size:var(--fs-scale);
     letter-spacing:.12em;
     text-transform:uppercase;
     color:var(--faint);
@@ -639,7 +748,7 @@
     background:none;
     border:0;
     font:inherit;
-    font-size:13px;
+    font-size:var(--fs-tab);
     font-weight:700;
     color:var(--faint);
     padding:14px 16px;
@@ -663,7 +772,7 @@
   .tab .count{
     display:inline-block;
     margin-left:7px;
-    font-size:11px;
+    font-size:var(--fs-tabcount);
     font-weight:700;
     color:var(--faint);
     font-variant-numeric:tabular-nums;
@@ -698,13 +807,13 @@
     gap:16px;
   }
   .lvlhead h2{
-    font-size:16px;
+    font-size:var(--fs-lvlhead);
     font-weight:800;
     letter-spacing:-.01em;
     margin:0;
   }
   .lvlpct{
-    font-size:24px;
+    font-size:var(--fs-lvlpct);
     font-weight:800;
     font-variant-numeric:tabular-nums;
     letter-spacing:-.02em;
@@ -714,7 +823,7 @@
   .lvlpct.p-bajo{ color:var(--low); }
 
   .verdict{
-    font-size:14px;
+    font-size:var(--fs-verdict);
     color:var(--soft);
     margin:22px 0 26px;
     max-width:56ch;
@@ -730,7 +839,7 @@
     padding:10px 0;
     border-bottom:1px solid var(--line2);
   }
-  .catname{ font-size:14px; }
+  .catname{ font-size:var(--fs-cat); }
   .minibar{
     display:block;
     height:5px;
@@ -750,7 +859,7 @@
   .minibar i.m-bajo{ background:var(--low); }
 
   .catpct{
-    font-size:12px;
+    font-size:var(--fs-catpct);
     color:var(--soft);
     text-align:right;
     font-variant-numeric:tabular-nums;
@@ -758,20 +867,19 @@
   }
   @media (max-width:600px){
     .cat{ grid-template-columns:1fr 70px 48px; gap:10px; }
-    .catname{ font-size:13px; }
   }
 
   /* ---------- Mapa de progreso ---------- */
 
   .plan h2{
-    font-size:16px;
+    font-size:var(--fs-plan-h2);
     font-weight:800;
     letter-spacing:-.01em;
     margin:32px 0 8px;
   }
   .plan h2:first-child{ margin-top:22px; }
   .plan .sub{
-    font-size:14px;
+    font-size:var(--fs-plan-sub);
     color:var(--soft);
     margin:0 0 30px;
     max-width:58ch;
@@ -779,7 +887,7 @@
 
   .group{ margin-bottom:30px; }
   .group h3{
-    font-size:11px;
+    font-size:var(--fs-group-h3);
     letter-spacing:.18em;
     text-transform:uppercase;
     font-weight:800;
@@ -808,17 +916,17 @@
     gap:18px;
     padding:9px 0;
     border-bottom:1px solid var(--line2);
-    font-size:14px;
+    font-size:var(--fs-item);
   }
   .item .tag{
     flex:none;
-    font-size:12px;
+    font-size:var(--fs-tag);
     color:var(--faint);
     font-variant-numeric:tabular-nums;
     font-weight:700;
   }
   .empty{
-    font-size:13px;
+    font-size:var(--fs-empty);
     color:var(--faint);
     font-style:italic;
   }
@@ -839,7 +947,7 @@
     display:flex;
     gap:20px;
     flex-wrap:wrap;
-    font-size:12px;
+    font-size:var(--fs-rev-stats);
     color:var(--soft);
     font-weight:700;
     letter-spacing:.02em;
@@ -862,7 +970,7 @@
     border:1px solid var(--line);
     border-radius:var(--radius);
     font:inherit;
-    font-size:12px;
+    font-size:var(--fs-filtro);
     font-weight:700;
     color:var(--soft);
     padding:7px 12px;
@@ -904,7 +1012,7 @@
     gap:10px;
     flex-wrap:wrap;
     margin-bottom:10px;
-    font-size:11px;
+    font-size:var(--fs-rev-top);
     letter-spacing:.1em;
     text-transform:uppercase;
     font-weight:800;
@@ -919,7 +1027,7 @@
     background:var(--bg);
     border:1px solid var(--line);
     border-radius:var(--radius);
-    font-size:12px;
+    font-size:var(--fs-rev-num);
     color:var(--soft);
     font-variant-numeric:tabular-nums;
   }
@@ -930,11 +1038,11 @@
     letter-spacing:0;
     font-weight:600;
     color:var(--faint);
-    font-size:12px;
+    font-size:var(--fs-rev-cat);
   }
 
   .rev-q{
-    font-size:15px;
+    font-size:var(--fs-rev-q);
     font-weight:600;
     line-height:1.45;
     margin:0 0 14px;
@@ -954,14 +1062,14 @@
     border:1px solid var(--line2);
     border-radius:var(--radius);
     background:var(--bg);
-    font-size:14px;
+    font-size:var(--fs-rev-opt);
     line-height:1.4;
     transition:background .15s ease, border-color .15s ease;
   }
   .rev-opt .rk{
     flex:none;
     width:20px;
-    font-size:11px;
+    font-size:var(--fs-rev-rk);
     font-weight:800;
     color:var(--faint);
     line-height:1.7;
@@ -985,7 +1093,7 @@
 
   .rev-opt .badge{
     flex:none;
-    font-size:10px;
+    font-size:var(--fs-badge);
     font-weight:800;
     letter-spacing:.1em;
     text-transform:uppercase;
@@ -1014,7 +1122,7 @@
 
   .rev-note{
     margin-top:11px;
-    font-size:12px;
+    font-size:var(--fs-rev-note);
     color:var(--faint);
     font-style:italic;
   }
@@ -1022,7 +1130,7 @@
   .rev-empty{
     padding:40px 0;
     text-align:center;
-    font-size:14px;
+    font-size:var(--fs-empty);
     color:var(--faint);
     font-style:italic;
   }
@@ -1042,7 +1150,7 @@
     border:0;
     border-bottom:1px solid var(--ink);
     font:inherit;
-    font-size:14px;
+    font-size:var(--fs-nav);
     font-weight:600;
     padding:8px 0;
     cursor:pointer;
@@ -1063,7 +1171,8 @@
   }
 
   @media print{
-    /* 1) Forzar paleta neutra para que el PDF sea legible siempre */
+    /* En impresión forzamos un tamaño legible y neutro,
+       independiente del ajuste elegido en pantalla. */
     :root[data-theme]{
       --bg:#fff; --surface:#fff; --ink:#111; --soft:#444; --faint:#666;
       --line:#ccc; --line2:#e2e2e2; --sel:#f2f2f2;
@@ -1075,19 +1184,35 @@
       --o3-bg:#fff; --o3-bd:#ccc;
       --o4-bg:#fff; --o4-bd:#ccc;
       --track-tex:none; --shadow:none; --radius:0px;
+
+      --fs-base:12px; --fs-eyebrow:10px; --fs-h1:20px; --fs-lead:11px;
+      --fs-q:14px; --fs-opt:12px; --fs-emo:14px;
+      --fs-btn-t:13px; --fs-btn-s:11px; --fs-meta:9px;
+      --fs-nav:11px; --fs-ghost:10px;
+
+      --fs-bignum:44px; --fs-bigsub:11px;
+      --fs-lvlhead:13px; --fs-lvlpct:16px; --fs-verdict:11px;
+      --fs-cat:11px; --fs-catpct:10px; --fs-scale:9px;
+
+      --fs-tab:11px; --fs-tabcount:10px;
+
+      --fs-plan-h2:13px; --fs-plan-sub:11px;
+      --fs-group-h3:10px; --fs-item:11px; --fs-tag:10px; --fs-empty:10px;
+
+      --fs-rev-stats:11px; --fs-rev-num:10px; --fs-rev-top:9px;
+      --fs-rev-cat:10px; --fs-rev-q:12px; --fs-rev-opt:11px;
+      --fs-rev-rk:9px; --fs-badge:9px; --fs-rev-note:10px; --fs-filtro:10px;
     }
 
     html, body{
       background:#fff !important;
       color:#111 !important;
-      font-size:12px !important;
+      font-size:var(--fs-base) !important;
       line-height:1.5 !important;
     }
 
-    /* 2) Ocultar todo lo interactivo */
     .gear,.panel,.nav,.ghost,.actions,.tabs{ display:none !important; }
 
-    /* 3) Contenedor limpio */
     .wrap{
       max-width:none !important;
       width:100% !important;
@@ -1095,11 +1220,9 @@
       margin:0 !important;
     }
 
-    /* 4) Todas las pestañas visibles y en orden */
     .tabpane[hidden]{ display:block !important; }
     .tabpane{ animation:none !important; }
 
-    /* 5) Saltos de página limpios entre secciones */
     .tabpane + .tabpane{
       break-before: page;
       page-break-before: always;
@@ -1107,7 +1230,6 @@
       padding-top:0 !important;
     }
 
-    /* 6) Título de cada pestaña como encabezado de sección */
     .tabpane::before{
       content: attr(data-print-title);
       display:block;
@@ -1121,16 +1243,10 @@
       border-bottom:2px solid #000;
     }
 
-    /* 7) Cabecera de resultados: se queda arriba de todo */
     .res-head{ display:block !important; }
-    .bignum{
-      font-size:44px !important;
-      color:#000 !important;
-      text-shadow:none !important;
-    }
-    .bigsub{ font-size:12px !important; color:#333 !important; }
+    .bignum{ color:#000 !important; text-shadow:none !important; }
+    .bigsub{ color:#333 !important; }
 
-    /* 8) Pista del corredor: simplificada pero legible */
     .track{ padding:0 !important; margin-top:12px !important; }
     .track-inner{ height:28px !important; }
     .track-inner::before{ display:none !important; }
@@ -1144,14 +1260,9 @@
     }
     .runner-body{ font-size:18px !important; }
     .runner-extra{ font-size:13px !important; }
-    .scale{
-      font-size:9px !important;
-      color:#333 !important;
-      margin-top:2px !important;
-    }
+    .scale{ font-size:9px !important; color:#333 !important; margin-top:2px !important; }
     .scale span{ color:#000 !important; }
 
-    /* 9) Bloques por nivel */
     .lvl{
       margin-top:18px !important;
       padding-top:14px !important;
@@ -1160,64 +1271,42 @@
       page-break-inside: avoid;
     }
     .lvl::before{ display:none !important; }
+    .lvlpct{ color:#000 !important; }
+    .verdict{ color:#333 !important; margin:8px 0 10px !important; }
 
-    .lvlhead h2{ font-size:13px !important; }
-    .lvlpct{ font-size:16px !important; color:#000 !important; }
-    .verdict{ font-size:11px !important; margin:8px 0 10px !important; color:#333 !important; }
-
-    /* 10) Categorías dentro de cada nivel */
     .cat{
       grid-template-columns:1fr 100px 50px !important;
       gap:10px !important;
       padding:5px 0 !important;
       border-bottom:1px solid #e2e2e2 !important;
-      font-size:11px !important;
       break-inside: avoid;
     }
-    .catname{ font-size:11px !important; }
-    .catpct{ font-size:10px !important; }
     .minibar{ height:4px !important; background:#e2e2e2 !important; }
     .minibar i{ background:#000 !important; }
     .minibar i.m-alto{ background:#1F6B3E !important; }
     .minibar i.m-mid{ background:#8A6A16 !important; }
     .minibar i.m-bajo{ background:#9C3B25 !important; }
 
-    /* 11) Mapa de progreso */
-    .plan h2{ font-size:13px !important; margin-top:14px !important; }
-    .plan .sub{ font-size:11px !important; margin:0 0 12px !important; }
-
+    .plan .sub{ margin:0 0 12px !important; }
     .group{ margin-bottom:14px !important; break-inside: avoid; }
-    .group h3{
-      font-size:10px !important;
-      margin-bottom:6px !important;
-      padding-left:8px !important;
-    }
+    .group h3{ margin-bottom:6px !important; padding-left:8px !important; }
     .item{
       padding:5px 0 !important;
-      font-size:11px !important;
       border-bottom:1px solid #e2e2e2 !important;
       break-inside: avoid;
     }
-    .item .tag{ font-size:10px !important; color:#333 !important; }
-    .empty{ font-size:10px !important; }
+    .item .tag{ color:#333 !important; }
 
-    /* 12) Revisión */
-    .rev-head{
-      display:block !important;
-      margin:12px 0 14px !important;
-    }
+    .rev-head{ display:block !important; margin:12px 0 14px !important; }
     .rev-stats{
       display:flex !important;
       gap:16px !important;
-      font-size:11px !important;
       margin-bottom:10px !important;
       color:#333 !important;
     }
     .rev-stats b{ color:#000 !important; }
 
     .filters{ display:none !important; }
-
-    /* Aseguramos que TODAS las preguntas salgan, sin importar filtros */
     .rev-item[hidden]{ display:block !important; }
 
     .rev{ gap:8px !important; }
@@ -1233,29 +1322,26 @@
     .rev-item.no{ border-left-color:#9C3B25 !important; }
     .rev-item.bl{ border-left-color:#666 !important; }
 
-    .rev-top{ margin-bottom:6px !important; font-size:9px !important; }
+    .rev-top{ margin-bottom:6px !important; }
     .rev-num{
       min-width:20px !important;
       height:20px !important;
-      font-size:10px !important;
       background:#fff !important;
       color:#000 !important;
       border-color:#ccc !important;
     }
     .rev-nivel{ color:#333 !important; }
-    .rev-cat{ font-size:10px !important; color:#555 !important; }
+    .rev-cat{ color:#555 !important; }
 
-    .rev-q{ font-size:12px !important; margin:0 0 8px !important; }
-
+    .rev-q{ margin:0 0 8px !important; }
     .rev-opts{ gap:4px !important; }
     .rev-opt{
       padding:5px 8px !important;
-      font-size:11px !important;
       border:1px solid #ddd !important;
       background:#fff !important;
       break-inside: avoid;
     }
-    .rev-opt .rk{ font-size:9px !important; width:14px !important; }
+    .rev-opt .rk{ width:14px !important; }
 
     .rev-opt.correct{
       background:#EDF6F0 !important;
@@ -1282,40 +1368,10 @@
       color:#fff !important;
     }
 
-    .rev-note{ font-size:10px !important; color:#666 !important; margin-top:5px !important; }
+    .rev-note{ color:#666 !important; margin-top:5px !important; }
 
-    /* 13) Evitar que un título quede huérfano al final de página */
     h1, h2, h3{ break-after: avoid; page-break-after: avoid; }
-
-    /* 14) Cualquier enlace, sin subrayado azul */
     a{ color:#000 !important; text-decoration:none !important; }
-  }
-
-  /* ============================================================
-     IMPRESIÓN EN PANTALLA (vista previa opcional)
-     ============================================================ */
-
-  body.print-preview .tabpane[hidden]{ display:block; }
-  body.print-preview .gear,
-  body.print-preview .panel,
-  body.print-preview .nav,
-  body.print-preview .ghost,
-  body.print-preview .actions,
-  body.print-preview .tabs{ display:none; }
-  body.print-preview .tabpane + .tabpane{
-    border-top:2px solid var(--line);
-    margin-top:40px;
-    padding-top:30px;
-  }
-  body.print-preview .tabpane::before{
-    content: attr(data-print-title);
-    display:block;
-    font-size:11px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
-    color:var(--faint);
-    font-weight:800;
-    margin-bottom:16px;
   }
 </style>
 </head>
@@ -1351,7 +1407,6 @@
 <script>
 /* ============================================================
    BANCO DE PREGUNTAS
-   Las opciones se mezclan al azar al iniciar cada test.
    ============================================================ */
 
 const DATA = [
@@ -1965,7 +2020,6 @@ function renderResultados() {
   enlazarFiltros();
 
   app.querySelector('#print').onclick = () => {
-    // Antes de imprimir, quitamos filtros ocultos para que salgan todas las preguntas
     FILTRO_REV = 'todas';
     const revCont = document.getElementById('rev');
     if(revCont) revCont.querySelectorAll('.rev-item').forEach(el => { el.hidden = false; });
