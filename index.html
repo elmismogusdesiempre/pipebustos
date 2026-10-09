@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="clasico" data-size="m">
+<html lang="es" data-theme="futbol" data-size="m">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -549,7 +549,7 @@
     margin-top:12px;
   }
 
-  /* ---------- Pista ---------- */
+  /* ---------- Pista y corredor ---------- */
 
   .track{ padding:0 16px; margin-top:26px; }
 
@@ -580,15 +580,30 @@
     transition:width 1.1s cubic-bezier(.25,.9,.3,1);
   }
 
+  /* Corredor temático: contenedor flexible con cuerpo (y opcional accesorio) */
   .runner{
     position:absolute;
     bottom:13px;
-    font-size:26px;
-    line-height:1;
-    user-select:none;
-    transform:translateX(-50%) scaleX(-1);
+    display:flex;
+    align-items:flex-end;
+    gap:2px;
+    transform:translateX(-50%);
     transition:left 1.1s cubic-bezier(.25,.9,.3,1);
     filter:drop-shadow(0 3px 5px rgba(0,0,0,.14));
+    user-select:none;
+  }
+  .runner-body{
+    font-size:26px;
+    line-height:1;
+    display:inline-block;
+  }
+  .runner-body.flip{
+    transform:scaleX(-1);
+  }
+  .runner-extra{
+    font-size:17px;
+    line-height:1;
+    margin-bottom:2px;
   }
 
   .scale{
@@ -992,18 +1007,11 @@
   }
   :root[data-theme="arcade"] .rev-opt.wrong .badge{ color:#2A0E13; }
 
-  .rev-opt .badge.solo{
-    background:var(--line);
-    color:var(--soft);
-  }
-
   .rev-opt .badge.mixta{
     background:var(--accent);
     color:#fff;
   }
   :root[data-theme="arcade"] .rev-opt .badge.mixta{ color:#12121B; }
-
-  .rev-opt.correct.wrong{ /* no aplica, por claridad */ }
 
   .rev-note{
     margin-top:11px;
@@ -1067,7 +1075,6 @@
     .gear,.panel,.nav,.ghost,.actions,.tabs{ display:none !important; }
     .wrap{ padding:0; max-width:none; }
     .tabpane[hidden]{ display:block !important; }
-    .tabpane{ break-inside:auto; }
     .tabpane::before{
       content:attr(data-print-title);
       display:block;
@@ -1116,6 +1123,8 @@
 <script>
 /* ============================================================
    BANCO DE PREGUNTAS
+   El índice `ok` original no importa mucho, porque las opciones
+   se mezclan al azar al iniciar cada test.
    ============================================================ */
 
 const DATA = [
@@ -1329,24 +1338,29 @@ const DATA = [
 
 /* ============================================================
    TEMAS VISUALES
+   Cada tema trae:
+     emojis  → los cuatro iconos de la matriz de respuestas
+     runner  → { main, flip, extra } para el corredor temático
    ============================================================ */
 
 const THEMES = [
-  {
-    id:'clasico',
-    nombre:'Clásico',
-    sub:'papel y tinta',
-    colores:['#FBFAF7','#16150F','#C2622E'],
-    emojis:['A','B','C','D'],
-    esTexto:true
-  },
   {
     id:'futbol',
     nombre:'Arquero',
     sub:'cancha y guantes',
     colores:['#F0F7EF','#1E8A4C','#C99A16'],
     emojis:['⚽','🥅','🧤','👟'],
-    esTexto:false
+    esTexto:false,
+    runner:{ main:'🏃‍♂️', flip:true, extra:'⚽' }
+  },
+  {
+    id:'clasico',
+    nombre:'Clásico',
+    sub:'papel y tinta',
+    colores:['#FBFAF7','#16150F','#C2622E'],
+    emojis:['A','B','C','D'],
+    esTexto:true,
+    runner:{ main:'🏃', flip:true, extra:null }
   },
   {
     id:'kawaii',
@@ -1354,7 +1368,8 @@ const THEMES = [
     sub:'pastel y suave',
     colores:['#FFF5F9','#F06A9B','#5BB98C'],
     emojis:['💖','🌸','⭐','🎀'],
-    esTexto:false
+    esTexto:false,
+    runner:{ main:'🐻', flip:false, extra:'💖' }
   },
   {
     id:'arcade',
@@ -1362,12 +1377,14 @@ const THEMES = [
     sub:'modo nocturno',
     colores:['#12121B','#8B7CFF','#3DDC97'],
     emojis:['🎮','👾','🕹️','🚀'],
-    esTexto:false
+    esTexto:false,
+    runner:{ main:'👾', flip:false, extra:null }
   }
 ];
 
-const LS_THEME = 'diag-theme';
-const LS_SIZE  = 'diag-size';
+const TEMA_DEFECTO = 'futbol';
+const LS_THEME = 'diag-theme-v2';
+const LS_SIZE  = 'diag-size-v2';
 
 function leerLS(clave, permitidos, def){
   try{
@@ -1380,7 +1397,7 @@ function guardarLS(clave, valor){
   try{ localStorage.setItem(clave, valor); }catch(e){}
 }
 
-let TEMA_ACTUAL = 'clasico';
+let TEMA_ACTUAL = TEMA_DEFECTO;
 
 function temaActual(){
   return THEMES.find(t => t.id === TEMA_ACTUAL) || THEMES[0];
@@ -1475,7 +1492,27 @@ let pantalla = 'inicio';
 
 const esc = s => String(s).replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
 
-/* ---------------- Pantalla inicial ---------------- */
+/* ---------- Utilidades ---------- */
+
+function shuffleArray(a){
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+/* Construye el corredor temático en HTML */
+function runnerHTML(pct){
+  const r = temaActual().runner;
+  const body = `<span class="runner-body${r.flip ? ' flip' : ''}">${r.main}</span>`;
+  const extra = r.extra ? `<span class="runner-extra">${r.extra}</span>` : '';
+  return `<div class="runner" style="left:${pct}%">${body}${extra}</div>`;
+}
+
+/* ============================================================
+   PANTALLA INICIAL
+   ============================================================ */
 
 function renderInicio() {
   pantalla = 'inicio';
@@ -1514,13 +1551,29 @@ function renderInicio() {
   });
 }
 
-/* ---------------- Iniciar ---------------- */
+/* ============================================================
+   INICIAR TEST — aquí se mezclan las opciones
+   ============================================================ */
 
 function start(modo) {
   const cola = [];
+
   DATA.forEach((n, ni) => {
     if (modo !== 'all' && ni !== modo) return;
-    n.preguntas.forEach((p, pi) => cola.push({ ni, pi }));
+
+    n.preguntas.forEach((p, pi) => {
+      // Mezclar los índices de las opciones
+      const orden = p.ops.map((_, i) => i);
+      shuffleArray(orden);
+
+      // Reconstruir las opciones en orden aleatorio
+      const ops = orden.map(i => p.ops[i]);
+
+      // Nueva posición de la respuesta correcta tras mezclar
+      const ok = orden.indexOf(p.ok);
+
+      cola.push({ ni, pi, ops, ok });
+    });
   });
 
   S = {
@@ -1533,7 +1586,9 @@ function start(modo) {
   renderTest();
 }
 
-/* ---------------- Pregunta ---------------- */
+/* ============================================================
+   PANTALLA DE PREGUNTA
+   ============================================================ */
 
 function renderTest() {
   pantalla = 'test';
@@ -1545,9 +1600,9 @@ function renderTest() {
   const total = cola.length;
   const pct   = ((i + 1) / total) * 100;
 
-  const tema = temaActual();
+  const tema   = temaActual();
   const emojis = tema.emojis;
-  const clase = tema.esTexto ? 'emoji txt' : 'emoji';
+  const clase  = tema.esTexto ? 'emoji txt' : 'emoji';
 
   app.innerHTML = `
     <div class="wrap">
@@ -1561,7 +1616,7 @@ function renderTest() {
       <div class="q">${esc(p.q)}</div>
 
       <div class="opts">
-        ${p.ops.map((o, k) => `
+        ${item.ops.map((o, k) => `
           <button class="opt${resp[i] === k ? ' sel' : ''}" data-k="${k}">
             <span class="${clase}">${emojis[k]}</span>
             <span class="t">${esc(o)}</span>
@@ -1617,7 +1672,9 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft'  && S.i > 0)                 { S.i--; renderTest(); }
 });
 
-/* ---------------- Cálculo ---------------- */
+/* ============================================================
+   CÁLCULO
+   ============================================================ */
 
 function calcular() {
   const niveles = DATA.map(n => ({
@@ -1633,7 +1690,7 @@ function calcular() {
     const L = niveles[item.ni];
 
     L.total++;
-    const bien = S.resp[i] === p.ok;
+    const bien = S.resp[i] === item.ok;   // <- usamos item.ok (posición ya mezclada)
     if (bien) L.ok++;
 
     if (!L.cats[p.cat]) L.cats[p.cat] = { total: 0, ok: 0 };
@@ -1657,7 +1714,9 @@ function veredictoNivel(pct) {
   return 'Apenas comenzando. Es normal: aquí es donde más se aprende.';
 }
 
-/* ---------------- Animación ---------------- */
+/* ============================================================
+   ANIMACIÓN DE PISTAS
+   ============================================================ */
 
 function animarTracks(root){
   const items = root.querySelectorAll('[data-pct]');
@@ -1734,7 +1793,7 @@ function renderResultados() {
           <div class="track-inner" data-pct="${pct}">
             <div class="track-base"></div>
             <div class="track-fill" style="width:${pct}%"></div>
-            <div class="runner" style="left:${pct}%">🏃</div>
+            ${runnerHTML(pct)}
           </div>
         </div>
         <div class="scale">
@@ -1798,7 +1857,7 @@ function renderResultados() {
         <div class="track-inner" data-pct="${pctGlobal}">
           <div class="track-base"></div>
           <div class="track-fill" style="width:${pctGlobal}%"></div>
-          <div class="runner" style="left:${pctGlobal}%">🏃</div>
+          ${runnerHTML(pctGlobal)}
         </div>
       </div>
       <div class="scale">
@@ -1850,13 +1909,11 @@ function renderResultados() {
       </div>
     </div>`;
 
-  /* --- eventos solapas --- */
   const tabs = app.querySelectorAll('.tab');
   tabs.forEach(t => {
     t.onclick = () => activarTab(t.dataset.tab);
   });
 
-  /* --- eventos filtros de revisión --- */
   enlazarFiltros();
 
   app.querySelector('#print').onclick = () => window.print();
@@ -1886,10 +1943,9 @@ function activarTab(nombre){
 
 function estadoPregunta(i){
   const item = S.cola[i];
-  const p = DATA[item.ni].preguntas[item.pi];
   const r = S.resp[i];
   if(r === null) return 'bl';
-  return r === p.ok ? 'ok' : 'no';
+  return r === item.ok ? 'ok' : 'no';
 }
 
 function htmlRevision(){
@@ -1923,14 +1979,16 @@ function htmlRevision(){
 
 function htmlRevItem(i, item){
   const p     = DATA[item.ni].preguntas[item.pi];
-  const r     = S.resp[i];
   const nivel = DATA[item.ni];
+  const r     = S.resp[i];
+  const ops   = item.ops;
+  const okPos = item.ok;
   const estado = estadoPregunta(i);
 
   const letras = ['A','B','C','D'];
 
-  const opts = p.ops.map((o, k) => {
-    const esCorrecta   = k === p.ok;
+  const opts = ops.map((o, k) => {
+    const esCorrecta   = k === okPos;
     const esEstudiante = k === r;
 
     let clase = '';
@@ -2015,7 +2073,7 @@ function aplicarFiltroRev(){
    ARRANQUE
    ============================================================ */
 
-aplicarTema(leerLS(LS_THEME, THEMES.map(t => t.id), 'clasico'));
+aplicarTema(leerLS(LS_THEME, THEMES.map(t => t.id), TEMA_DEFECTO));
 aplicarSize(leerLS(LS_SIZE, ['s','m','l','xl'], 'm'));
 renderInicio();
 </script>
